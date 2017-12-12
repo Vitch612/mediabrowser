@@ -2,6 +2,10 @@
 include "include.php";
 include "head.php";
 
+function search() {
+  echo '<form id="searchform" method="post" action="search.php"><input type="text" id="searchstring" name="searchstring"/><input type="submit" id="searchbutton" value="Search"><div style="margin-left:10px;" id="displaytext"></div></form>';
+}
+
 function getsafe($var,$name="",$spacer="") {
 	$firstrun=false;
 	if ($spacer=="")
@@ -86,6 +90,7 @@ function debug() {
 	$_REQUEST;
 	return getsafe($GLOBALS,"GLOBALS");
 }
+
 function dirSize($directory) {
 	$size = 0;
 	foreach(new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory)) as $file){
@@ -93,15 +98,7 @@ function dirSize($directory) {
 	}
 	return $size;
 }
-function get_id() {
-  list($usec, $sec) = explode(' ', microtime());
-  srand($sec + $usec * 1000000);
-  $id="";
-  for ($i=0;$i<10;$i++) {
-    $id.=rand(0,9);
-  }
-  return $id;  
-}
+
 function dirlist($dirpath,$show=0) {
   global $file_types;
   global $file_icons;
@@ -171,6 +168,7 @@ function dirlist($dirpath,$show=0) {
 }
 
 show_nav();
+search();
 if (isset($_GET["path"])) {  
   $req=str_replace("\\","/",clean_dirpath(base64_decode($_GET["path"])));
   if (check_permission($req))
@@ -180,9 +178,10 @@ if (isset($_GET["path"])) {
     die("<h3>Access Denied</h3>");
   }
 } else {
-  foreach ($shares as $share) {
+  foreach ($shares as $share=>$value) {
     dirlist($share);
   }
 }
+//echo '<pre>'.print_r($_SERVER,true).'</pre>';
 //echo '<div class="incGetSafe">'.debug().'</div>';
 include "foot.php";

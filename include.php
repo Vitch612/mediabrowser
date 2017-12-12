@@ -1,21 +1,78 @@
 <?php
 error_reporting(E_ERROR | E_PARSE);
-$shares=["E:/movies","D:/Audio"];//,"I:/media"];
+$max_search=1;
+$shares=["E:/movies"=>1,"D:/Audio"=>1];//,"I:/media"];
 $file_types=["image","audio","video","pdf","zip","exe","html","folder","other"];
 $file_icons=["pix/image.png","pix/mp3.png","pix/video.png","pix/pdf.png","pix/zip.png","pix/exe.png","pix/html.png","pix/folder.png","pix/text.png"];
 $base=substr($_SERVER["PHP_SELF"],0,strpos($_SERVER["PHP_SELF"],"/",1));
+$folder=substr($_SERVER["SCRIPT_FILENAME"],0,strrpos($_SERVER["SCRIPT_FILENAME"],"/"));
+  
+  
+$datalock=false;
+
+function get_id() {
+  list($usec, $sec) = explode(' ', microtime());
+  srand($sec + $usec * 1000000);
+  $id="";
+  for ($i=0;$i<10;$i++) {
+    $id.=rand(0,9);
+  }
+  return $id;  
+}
+
+function addlog($text) {
+  global $folder;
+  file_put_contents("$folder/data/logfile.txt",date("Y-m-d h:i:sa")."  ===>  ".$text."\n",FILE_APPEND);
+}
+
+function readPersistent($name) {
+  global $folder;
+  while($datalock);
+  $s = file_get_contents("$folder/data/data.sr");
+  $a = unserialize($s);
+  return $a[$name];  
+}
+
+function deletePersistent($name) {
+  global $folder;
+  while($datalock);
+  $s=[];
+  $s = file_get_contents("$folder/data/data.sr");
+  $a = unserialize($s);
+  unset($a[$name]);
+  $s=serialize($a);
+  $datalock=true;
+  while (!file_put_contents("$folder/data/data.sr", $s));
+  $datalock=false;
+}
+
+function savePersistent($name,$value) {
+  global $folder;
+  while($datalock);
+  $s=[];
+  $s = file_get_contents("$folder/data/data.sr");
+  $a = unserialize($s);
+  $a[$name]=$value;
+  $s=serialize($a);
+  $datalock=true;
+  while(!file_put_contents("$folder/data/data.sr", $s));
+  $datalock=false;
+}
+
 function startWith($haystack,$needle,$case=true) {
   if ($case)
     return (strcasecmp(substr($haystack,0,strlen($needle)),$needle)===0);
   else
     return (strcmp(substr($haystack,0,strlen($needle)), $needle)===0);
 }
+
 function endWith($haystack,$needle,$case=true) {
 	if($case)
 		return (strcmp(substr($haystack, strlen($haystack) - strlen($needle)),$needle)===0);
 	else
     return (strcasecmp(substr($haystack, strlen($haystack) - strlen($needle)),$needle)===0);
 }
+
 function get_file_type($file) {
   if (endWith($file,".gif",0000) || endWith($file,".png",0000) || endWith($file,".jpg",0000) || endWith($file,".jpeg",0000) || endWith($file,".bmp",0000))
 	  return 0;
@@ -34,12 +91,14 @@ function get_file_type($file) {
 	else
 	  return 8;  
 }
+
 function show_nav() {
   global $base;
   echo "<div class=\"row\"><div class=\"col-xs-12 navmenu\"><ul><li><a href=\"$base\"><img src=\"$base/pix/home.png\"/></a></li><li>
     <a href=\"".$base."/playlists.php\"><img src=\"$base/pix/playlist.png\"/></a>
     </li></ul></div></div>";
 }
+
 function clean_dirpath($path) {  
   $concat=str_replace("\\","/",$path);
   while (($pos=strpos($concat,"/../"))>0) {
@@ -56,10 +115,11 @@ function clean_dirpath($path) {
   }
   return $concat;
 }
+
 function check_permission($path) {
   global $shares;
   $allowed=false;  
-  foreach ($shares as $share) {
+  foreach ($shares as $share=>$value) {
     if (startWith($path, $share, false)) {
       $allowed = true;
     }

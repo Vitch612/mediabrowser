@@ -5,7 +5,9 @@ $BODYOPEN = <<< BODYSTRING
 <!-- -->
 <script type="text/javascript" src="$base/js/jquery.min.js"></script>
 <script type="text/javascript" src="$base/js/bootstrap.min.js"></script> 
-  <script type="text/javascript" src="$base/js/debug.js"></script> 
+<script type="text/javascript" src="$base/js/search.js"></script> 
+<script type="text/javascript" src="$base/js/debug.js"></script> 
+ 
 <script type="text/javascript">
 function gotill(got) {
 	if (got.is(":visible")) {
