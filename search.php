@@ -18,7 +18,7 @@ function dirsearch($dirpath,$searchstring) {
 		if (is_dir($entry)) {
       dirsearch($entry,$searchstring);
 		} else {
-      if (strpos($file,$searchstring)!=false) {
+      if (strpos(strtolower($file),  strtolower($searchstring))!==false) {
         echo $entry."<BR>";
       }
     }    
@@ -48,5 +48,6 @@ if (isset($_REQUEST["searchstring"]) && $_REQUEST["searchstring"]!="") {
   foreach ($shares as $share=>$value) {
     if ($value==1)
       dirsearch($share,$_REQUEST["searchstring"]);
-  }  
+  }
+  echo "Search complete";
 }

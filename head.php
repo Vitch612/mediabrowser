@@ -1,13 +1,13 @@
 <?php
-$BODYOPEN = <<< BODYSTRING
-<html>
+$BODYOPEN = '<html>
 <head>
 <!-- -->
-<script type="text/javascript" src="$base/js/jquery.min.js"></script>
-<script type="text/javascript" src="$base/js/bootstrap.min.js"></script> 
-<script type="text/javascript" src="$base/js/search.js"></script> 
-<script type="text/javascript" src="$base/js/debug.js"></script> 
- 
+<link rel="shortcut icon" href="'.$base.'/folder.ico" type="image/x-icon" />
+<script type="text/javascript" src="'.$base.'/js/jquery.min.js"></script>
+<script type="text/javascript" src="'.$base.'/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="'.$base.'/js/search.js"></script>
+<script type="text/javascript" src="'.$base.'/js/debug.js"></script>
+
 <script type="text/javascript">
 function gotill(got) {
 	if (got.is(":visible")) {
@@ -26,7 +26,7 @@ function gotill(got) {
 }
 
 $(document).ready(function(){
-  $('.nolink').click(function(event) {
+  $(".nolink").click(function(event) {
     if ($($(this).attr("href")).hasClass("mycollapsed")) {
       $($(this).attr("href")).removeClass("mycollapsed");
     } else {
@@ -35,7 +35,7 @@ $(document).ready(function(){
     event.preventDefault();
     return false;
   });
-  
+
 	$(".b0").children().not(".key").not(".spacer").not(".name").parent().hide();
 	$(".spacer").click(function(){
 		$(".spacer").hide();
@@ -212,6 +212,5 @@ padding:10px;
 }
 </style></head>
 <body>
-<div class="bodydiv container">
-BODYSTRING;
+<div class="bodydiv container">';
 echo $BODYOPEN;

@@ -1,13 +1,14 @@
 <?php
 error_reporting(E_ERROR | E_PARSE);
+include "database.php";
 $max_search=1;
-$shares=["E:/movies"=>1,"D:/Audio"=>1];//,"I:/media"];
+$shares=["C:/movies"=>1,"E:/Audio"=>0];
 $file_types=["image","audio","video","pdf","zip","exe","html","folder","other"];
 $file_icons=["pix/image.png","pix/mp3.png","pix/video.png","pix/pdf.png","pix/zip.png","pix/exe.png","pix/html.png","pix/folder.png","pix/text.png"];
 $base=substr($_SERVER["PHP_SELF"],0,strpos($_SERVER["PHP_SELF"],"/",1));
 $folder=substr($_SERVER["SCRIPT_FILENAME"],0,strrpos($_SERVER["SCRIPT_FILENAME"],"/"));
-  
-  
+$mysql=new database();
+
 $datalock=false;
 
 function get_id() {
@@ -17,7 +18,7 @@ function get_id() {
   for ($i=0;$i<10;$i++) {
     $id.=rand(0,9);
   }
-  return $id;  
+  return $id;
 }
 
 function addlog($text) {
@@ -30,7 +31,7 @@ function readPersistent($name) {
   while($datalock);
   $s = file_get_contents("$folder/data/data.sr");
   $a = unserialize($s);
-  return $a[$name];  
+  return $a[$name];
 }
 
 function deletePersistent($name) {
@@ -89,7 +90,7 @@ function get_file_type($file) {
 	else if (endWith($file,".htm",0000) || endWith($file,".html",0000) || endWith($file,".txt",0000) || endWith($file,".inf",0000) || endWith($file,".srt",0000) || endWith($file,".sub",0000) || endWith($file,".info",0000) )
 	  return 6;
 	else
-	  return 8;  
+	  return 8;
 }
 
 function show_nav() {
@@ -99,7 +100,7 @@ function show_nav() {
     </li></ul></div></div>";
 }
 
-function clean_dirpath($path) {  
+function clean_dirpath($path) {
   $concat=str_replace("\\","/",$path);
   while (($pos=strpos($concat,"/../"))>0) {
     $prev=substr($concat,0,$pos-4);
@@ -118,7 +119,7 @@ function clean_dirpath($path) {
 
 function check_permission($path) {
   global $shares;
-  $allowed=false;  
+  $allowed=false;
   foreach ($shares as $share=>$value) {
     if (startWith($path, $share, false)) {
       $allowed = true;

@@ -34,6 +34,26 @@ AddEncoding gzip svgz
   # not set.
   php_value always_populate_raw_post_data   -1
 </IfModule>
+<IfModule mod_php6.c>
+  php_value assert.active                   0
+  php_flag session.auto_start               off
+  php_value mbstring.http_input             pass
+  php_value mbstring.http_output            pass
+  php_flag mbstring.encoding_translation    off
+  # PHP 5.6 has deprecated $HTTP_RAW_POST_DATA and produces warnings if this is
+  # not set.
+  php_value always_populate_raw_post_data   -1
+</IfModule>
+<IfModule mod_php7.c>
+  php_value assert.active                   0
+  php_flag session.auto_start               off
+  php_value mbstring.http_input             pass
+  php_value mbstring.http_output            pass
+  php_flag mbstring.encoding_translation    off
+  # PHP 5.6 has deprecated $HTTP_RAW_POST_DATA and produces warnings if this is
+  # not set.
+  php_value always_populate_raw_post_data   -1
+</IfModule>
 
 
 # Set a fallback resource if mod_rewrite is not enabled. This allows Drupal to
@@ -80,7 +100,7 @@ AddEncoding gzip svgz
 
   RewriteRule ^show/ show.php?$1
 
-  RewriteRule ^file/ getfile.php?$1s
+  RewriteRule ^file/ getfile.php?$1
   
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
