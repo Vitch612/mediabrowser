@@ -13,7 +13,8 @@ class ResumeDownload {
 
   function __construct($file, $delay = 0) {
     if (!is_file($file)) {
-      header("HTTP/1.1 400 Invalid Request");
+      //logmsg(" HTTP/1.1 400 Invalid Request");
+      header(" HTTP/1.1 400 Invalid Request");
       die("<h3>File Not Found</h3>");
     }
     $this->path = $file;
@@ -28,38 +29,21 @@ class ResumeDownload {
   public function process() {
     $ranges = NULL;
     $t = 0;
-    
-    //$log=fopen("c:/web/browse/logfile.txt","w");
-    //fwrite($log,"openned");
-    //fwrite($log,"ranges\n".print_r($ranges,true));
-
     if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_SERVER['HTTP_RANGE']) && $range = stristr(trim($_SERVER['HTTP_RANGE']), 'bytes=')) {
       $range = substr($range, 6);
       $ranges = explode(',', $range);
-      $t = count($ranges);      
+      $t = count($ranges);
     }
-    
-    /*
-    else {
-      $t=1;
-      $lastb=$this->chunk-1;
-      $range="0-$lastb";
-      $ranges = explode(',', $range);
-    }*/
-        
-    header("Accept-Ranges: bytes");    
+    header("Accept-Ranges: bytes");
     header("Content-Type: $this->mime");
-    
-    //header("Cache-Control: max-age=2592000, public");
-    //header("Expires: ".gmdate('D, d M Y H:i:s', time()+2592000) . ' GMT');
-    //header("Last-Modified: ".gmdate('D, d M Y H:i:s', filemtime($this->path)) . ' GMT' );
-    
     header("Content-Transfer-Encoding: binary");
     header(sprintf('Content-Disposition: attachment; filename="%s"', $this->name));
     if ($t > 0) {
+      //logmsg(" HTTP/1.1 206 Partial content");
       header("HTTP/1.1 206 Partial content");
       $t === 1 ? $this->pushSingle($range) : $this->pushMulti($ranges);
     } else {
+      //logmsg(" Content-Length: " . $this->size);
       header("Content-Length: " . $this->size);
       $this->readFile();
     }
@@ -69,7 +53,9 @@ class ResumeDownload {
   private function pushSingle($range) {
     $start = $end = 0;
     $this->getRange($range, $start, $end);
+    //logmsg(" Content-Length: " . ($end - $start + 1));
     header("Content-Length: " . ($end - $start + 1));
+    //logmsg(" ".sprintf("Content-Range: bytes %d-%d/%d", $start, $end, $this->size));
     header(sprintf("Content-Range: bytes %d-%d/%d", $start, $end, $this->size));
     fseek($this->file, $start);
     $this->readBuffer($end - $start + 1);
@@ -78,7 +64,7 @@ class ResumeDownload {
 
   private function pushMulti($ranges) {
     $length = $start = $end = 0;
-    $output = "";    
+    $output = "";
     $tl = "Content-type: $this->mime\r\n";
     $formatRange = "Content-range: bytes %d-%d/%d\r\n\r\n";
     foreach ($ranges as $range) {
@@ -89,6 +75,9 @@ class ResumeDownload {
       $length += $end - $start + 1;
     }
     $length += strlen("\r\n--$this->boundary--\r\n");
+
+    //logmsg(" Content-Length: $length");
+    //logmsg(" Content-Type: multipart/x-byteranges; boundary=$this->boundary");
     header("Content-Length: $length");
     header("Content-Type: multipart/x-byteranges; boundary=$this->boundary");
     foreach ($ranges as $range) {
@@ -116,6 +105,8 @@ class ResumeDownload {
         $end = $fileSize - 1;
     }
     if ($start > $end) {
+      //logmsg(" Status: 416 Requested range not satisfiable");
+      //logmsg(" Content-Range: */" . $fileSize);
       header("Status: 416 Requested range not satisfiable");
       header("Content-Range: */" . $fileSize);
       exit();
@@ -191,7 +182,7 @@ if (!function_exists('mime_content_type')) {
       'mpg' => 'audio/mpeg',
       'wma' => 'audio/x-ms-wma',
       'wmv' => 'audio/x-ms-wmv',
-      
+
       // adobe
       'pdf' => 'application/pdf',
       'psd' => 'image/vnd.adobe.photoshop',
@@ -221,6 +212,27 @@ if (!function_exists('mime_content_type')) {
   }
 }
 
+//function logmsg($text) {
+// $log=fopen("c:/web/browse/logfile.txt","a");
+// fwrite($log,number_format(microtime(true),4).": $text\n");
+// fclose($log);
+//}
+
+//function script_end() {
+//    if (connection_aborted()) {
+      //logmsg("");
+      //logmsg("Connection Aborted");
+//    }
+    //logmsg("");
+//}
+
+//register_shutdown_function("script_end");
+//logmsg("Request Headers");
+//foreach (getallheaders() as $name => $value) {
+//    logmsg(" $name: $value");
+//}
+//logmsg("");
+//logmsg("Response Headers");
 $str=$_SERVER["REQUEST_URI"];
 $path = base64_decode(substr($str, strrpos($str, "/") + 1, strrpos($str, ".") - strlen($str)));
 $path = str_replace("\\", "/", clean_dirpath($path));
