@@ -34,4 +34,9 @@ $(document).ready(function() {
     });
     event.preventDefault();
   });  
+  $("#ScanPage").click(function(e) {
+    if (!confirm("The scan page can take a long time to run, are you sure you want to open it?")) {
+      e.preventDefault();
+    }
+  });  
 });

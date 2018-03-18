@@ -169,6 +169,7 @@ function dirscan($dirpath) {
 ini_set('max_execution_time', 0);
 ob_implicit_flush(true);
 show_nav();
+echo "Please wait for directory scan to complete before results are displayed.<BR><BR>";
 ob_flush();
 foreach ($shares as $folder=>$value) {
   break;

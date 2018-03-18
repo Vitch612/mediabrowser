@@ -5,7 +5,7 @@ $BODYOPEN = '<html>
 <link rel="shortcut icon" href="'.$base.'/folder.ico" type="image/x-icon" />
 <script type="text/javascript" src="'.$base.'/js/jquery.min.js"></script>
 <script type="text/javascript" src="'.$base.'/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="'.$base.'/js/search.js"></script>
+<script type="text/javascript" src="'.$base.'/js/scripts.js"></script>
 <script type="text/javascript" src="'.$base.'/js/debug.js"></script>
 
 <script type="text/javascript">

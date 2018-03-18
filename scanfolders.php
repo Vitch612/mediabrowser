@@ -75,9 +75,9 @@ ob_implicit_flush(true);
 show_nav();
 
 if ($allowedruntime==0) {
-  echo "Scanning with no time limit - do not close this page until process is over<BR>";
+  echo "Scanning with no time limit, closing this page before the scan is complete can cause data corruption.<BR><BR>";
 } else {
-  echo "Scanning with a time limit of $allowedruntime seconds - do not close this page until process is over<BR>";
+  echo "Scanning with a time limit of $allowedruntime seconds, closing this page before the scan is complete can cause data corruption.<BR><BR>";
 }
 ob_flush();
 foreach ($shares as $folder=>$value) {

@@ -95,10 +95,11 @@ function get_file_type($file) {
 
 function show_nav() {
   global $base;
-  echo "<div class=\"row\"><div class=\"col-xs-12 navmenu\"><ul><li><a href=\"$base\"><img src=\"$base/pix/home.png\"/></a></li><li>
-    <a href=\"".$base."/playlists.php\"><img src=\"$base/pix/playlist.png\"/></a>
-    </li><li><a href=\"".$base."/showduplicates.php\"><img src=\"$base/pix/duplicate.png\"/></a></li>
-      <li><a href=\"".$base."/scanfolders.php\"><img src=\"$base/pix/scan.png\"/></a></li>
+  echo "<div class=\"row\"><div class=\"col-xs-12 navmenu\"><ul>
+   <li><a title=\"Homepage\" href=\"$base\"><img src=\"$base/pix/home.png\"/></a></li>
+   <li><a title=\"Manage Playlists\" href=\"$base/playlists.php\"><img src=\"$base/pix/playlist.png\"/></a></li>
+   <li><a id=\"DuplicatesPage\" title=\"Manage Duplicates Sorted By Name\" href=\"$base/showduplicates.php\"><img src=\"$base/pix/duplicate.png\"/></a></li>
+   <li><a id=\"ScanPage\" title=\"Scan For Duplicates Based On File Contents And Length\" href=\"$base/scanfolders.php\"><img src=\"$base/pix/scan.png\"/></a></li>
     </ul></div></div>";
 }
 
