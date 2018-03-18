@@ -6,7 +6,7 @@ $shares=["E:/Media/Audio/Musique"=>0,"C:/movies"=>1];
 $file_types=["image","audio","video","pdf","zip","exe","html","folder","other"];
 $file_icons=["pix/image.png","pix/mp3.png","pix/video.png","pix/pdf.png","pix/zip.png","pix/exe.png","pix/html.png","pix/folder.png","pix/text.png"];
 $base=substr($_SERVER["PHP_SELF"],0,strpos($_SERVER["PHP_SELF"],"/",1));
-$folder=substr($_SERVER["SCRIPT_FILENAME"],0,strrpos($_SERVER["SCRIPT_FILENAME"],"/"));
+$applicationfolder=substr($_SERVER["SCRIPT_FILENAME"],0,strrpos($_SERVER["SCRIPT_FILENAME"],"/"));
 $mysql=new database();
 
 $datalock=false;
@@ -22,41 +22,41 @@ function get_id() {
 }
 
 function logmsg($text) {
- global $folder;
- file_put_contents("$folder/logfile.txt",date("Y-m-d h:i:sa").": ".$text."\n",FILE_APPEND);
+ global $applicationfolder;
+ file_put_contents("$applicationfolder/logfile.txt",date("Y-m-d h:i:sa").": ".$text."\n",FILE_APPEND);
 }
 
 function readPersistent($name) {
-  global $folder;
+  global $applicationfolder;
   while($datalock);
-  $s = file_get_contents("$folder/data/data.sr");
+  $s = file_get_contents("$applicationfolder/data/data.sr");
   $a = unserialize($s);
   return $a[$name];
 }
 
 function deletePersistent($name) {
-  global $folder;
+  global $applicationfolder;
   while($datalock);
   $s=[];
-  $s = file_get_contents("$folder/data/data.sr");
+  $s = file_get_contents("$applicationfolder/data/data.sr");
   $a = unserialize($s);
   unset($a[$name]);
   $s=serialize($a);
   $datalock=true;
-  while (!file_put_contents("$folder/data/data.sr", $s));
+  while (!file_put_contents("$applicationfolder/data/data.sr", $s));
   $datalock=false;
 }
 
 function savePersistent($name,$value) {
-  global $folder;
+  global $applicationfolder;
   while($datalock);
   $s=[];
-  $s = file_get_contents("$folder/data/data.sr");
+  $s = file_get_contents("$applicationfolder/data/data.sr");
   $a = unserialize($s);
   $a[$name]=$value;
   $s=serialize($a);
   $datalock=true;
-  while(!file_put_contents("$folder/data/data.sr", $s));
+  while(!file_put_contents("$applicationfolder/data/data.sr", $s));
   $datalock=false;
 }
 
@@ -97,7 +97,9 @@ function show_nav() {
   global $base;
   echo "<div class=\"row\"><div class=\"col-xs-12 navmenu\"><ul><li><a href=\"$base\"><img src=\"$base/pix/home.png\"/></a></li><li>
     <a href=\"".$base."/playlists.php\"><img src=\"$base/pix/playlist.png\"/></a>
-    </li><li><a href=\"".$base."/showduplicates.php\"><img style=\"margin-bottom:3px;\" src=\"$base/pix/duplicate.png\"/></a></li></ul></div></div>";
+    </li><li><a href=\"".$base."/showduplicates.php\"><img src=\"$base/pix/duplicate.png\"/></a></li>
+      <li><a href=\"".$base."/scanfolders.php\"><img src=\"$base/pix/scan.png\"/></a></li>
+    </ul></div></div>";
 }
 
 function clean_dirpath($path) {

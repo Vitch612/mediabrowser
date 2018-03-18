@@ -99,7 +99,7 @@ class database {
         }
       }
     } else {
-      logmsg([$this->conn->error,$sql]);
+      logmsg("SQL ERROR: ".$this->conn->error." Query=".$sql);
       $this->error=$this->conn->error;
     }
     return $data;

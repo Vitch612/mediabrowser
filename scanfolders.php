@@ -1,5 +1,6 @@
 <?php
 include "include.php";
+include "head.php";
 $abort = false;
 $active = true;
 $starttime = time();
@@ -32,10 +33,9 @@ function dirscan($dirpath, $startpoint = "") {
     if (is_dir($fullpath)) {
       $fullpath = dirscan($fullpath, $startpoint);
     } else {
-      echo $fullpath."<BR>";
       if ($active) {
         try {
-          $search = $mysql->select("files", ["ID"], "`Path`='$fullpath'");
+          $search = $mysql->select("files", ["ID"], "`Path`='".$mysql->conn->real_escape_string($fullpath)."'");
           if (count($search) == 0) {
             $fh = fopen($fullpath, "r");
 //          if (filesize($fullpath) > 2 * $chunksize) {            
@@ -66,9 +66,32 @@ function dirscan($dirpath, $startpoint = "") {
   closedir($dir_handle);
   return $fullpath;
 }
-ob_implicit_flush(true);
+
 ini_set('max_execution_time', 0);
+$allowedruntime=ini_get('max_execution_time');
+if ($allowedruntime>10)
+  $allowedruntime-=10;
+ob_implicit_flush(true);
+show_nav();
+
+if ($allowedruntime==0) {
+  echo "Scanning with no time limit - do not close this page until process is over<BR>";
+} else {
+  echo "Scanning with a time limit of $allowedruntime seconds - do not close this page until process is over<BR>";
+}
+ob_flush();
 foreach ($shares as $folder=>$value) {
   break;
 }
 dirscan($folder);
+
+$dups=$mysql->select("duplicates",["*"]);
+if (count($dups)==0) {
+  echo "No duplicates";
+} else {
+  foreach($dups as $row) {
+    echo $row["Path"]."<BR>";
+    $file=$mysql->select("files",["*"],"`MD5`='".$row["MD5"]."' AND `Size`='".$row["Size"]."'");
+    echo $file[0]["Path"]."<BR><BR>";
+  }  
+}

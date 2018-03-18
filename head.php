@@ -95,6 +95,9 @@ padding:0;
 .mycollapsed {
   display:none;
 }
+#aplay {
+  width:600px;
+}
 .delete {
   margin-bottom:-6px;
   margin-right:5px;

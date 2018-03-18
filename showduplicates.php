@@ -60,6 +60,7 @@ function getMP3BitRateSampleRate($filename)
             $frame['layer'] = abs((($bytes[$o+1] & 6) >> 1) - 4); //get CC (1 -> 3), then invert
             $srIndex = ($bytes[$o+2] & 12) >> 2; //get FF (0 -> 3)
             $brRow = ($bytes[$o+2] & 240) >> 4; //get EEEE (0 -> 15)
+            $frame["channels"]=($bytes[$o+3] & 192) >> 6;            
             $frame['padding'] = ($bytes[$o+2] & 2) >> 1; //get G
             if ($frame['version'] != 1 && $frame['layer'] > 0 && $srIndex < 3 && $brRow != 15 && $brRow != 0 &&
                 (!$lastFrameVerify || $lastFrameVerify === $bytes[$o+1])) {
@@ -94,10 +95,9 @@ function getMP3BitRateSampleRate($filename)
         $header = array_pop($frames);
         $fileData['sampleRate'] = $header['sampleRate'];
         $fileData['bitRate'] = $header['bitRate'];
-
+        $fileData['channels'] = ($header['channels'] ==3?"mono":"stereo");
         break;
     }
-
     return $fileData;
 }
 
@@ -166,9 +166,10 @@ function dirscan($dirpath) {
   closedir($dir_handle);        
 }
 
-
+ini_set('max_execution_time', 0);
 ob_implicit_flush(true);
 show_nav();
+ob_flush();
 foreach ($shares as $folder=>$value) {
   break;
 }
@@ -220,7 +221,7 @@ foreach($names as $namecode=>$entry) {
       $count2++;
       if (strtolower(substr($file,strlen($file)-4))==".mp3") {
           $mp3info=getMP3BitRateSampleRate($file);          
-          $result.="<span><img class=\"delete\" target=\"".base64_encode($file)."\" src=\"pix/delete.png\"/><a title=\"$file\" target=\"_blank\" href=\"show/".base64_encode($file)."\">".basename($file)."</a> (".filesize($file).") ".$mp3info["bitRate"]."/".$mp3info["sampleRate"]."<BR></span>";
+          $result.="<span><img class=\"delete\" target=\"".base64_encode($file)."\" src=\"pix/delete.png\"/><a title=\"$file\" target=\"_blank\" href=\"show/".base64_encode($file)."\">".basename($file)."</a> (".filesize($file).") ".$mp3info["channels"]."/".$mp3info["bitRate"]."/".$mp3info["sampleRate"]."<BR></span>";
       } else {
         $result.="<span><img class=\"delete\" target=\"".base64_encode($file)."\" src=\"pix/delete.png\"/><a  title=\"$file\" target=\"_blank\" href=\"show/".base64_encode($file)."\">".basename($file)."</a> (".filesize($file).")<BR></span>";  
       }
@@ -245,7 +246,7 @@ foreach($names as $namecode=>$entry) {
       $count2++;
       if (strtolower(substr($file,strlen($file)-4))==".mp3") {
           $mp3info=getMP3BitRateSampleRate($file);          
-          $result.="<span><img class=\"delete\" target=\"".base64_encode($file)."\" src=\"pix/delete.png\"/><a title=\"$file\" target=\"_blank\" href=\"show/".base64_encode($file)."\">".basename($file)."</a> (".filesize($file).") ".$mp3info["bitRate"]."/".$mp3info["sampleRate"]."<BR></span>";
+          $result.="<span><img class=\"delete\" target=\"".base64_encode($file)."\" src=\"pix/delete.png\"/><a title=\"$file\" target=\"_blank\" href=\"show/".base64_encode($file)."\">".basename($file)."</a> (".filesize($file).") ".$mp3info["channels"]."/".$mp3info["bitRate"]."/".$mp3info["sampleRate"]."<BR></span>";
       } else {
         $result.="<span><img class=\"delete\" target=\"".base64_encode($file)."\" src=\"pix/delete.png\"/><a  title=\"$file\" target=\"_blank\" href=\"show/".base64_encode($file)."\">".basename($file)."</a> (".filesize($file).")<BR></span>";  
       }
@@ -276,3 +277,4 @@ echo $count."<BR>";
 ////  if (unlink($row["Path"]))
 ////    $mysql->delete("files","`ID`='".$row["ID"]."'");
 //}
+
