@@ -169,7 +169,7 @@ function dirscan($dirpath) {
 ini_set('max_execution_time', 0);
 ob_implicit_flush(true);
 show_nav();
-echo "Please wait for directory scan to complete before results are displayed.<BR><BR>";
+echo "Please wait for directory scan to complete before results are displayed.(note: bitrates are inaccurate in case of vbr mp3 files)<BR><BR>";
 ob_flush();
 foreach ($shares as $folder=>$value) {
   break;
