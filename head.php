@@ -96,7 +96,7 @@ padding:0;
   display:none;
 }
 .delete {
-  margin-bottom:-7px;
+  margin-bottom:-6px;
   margin-right:5px;
 }
 .b1 {

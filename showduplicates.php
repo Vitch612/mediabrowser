@@ -169,11 +169,14 @@ function dirscan($dirpath) {
 
 ob_implicit_flush(true);
 show_nav();
-
-dirscan("E:/Media/Audio/Musique");
+foreach ($shares as $folder=>$value) {
+  break;
+}
+dirscan($folder);
 $count1=0;
 $count2=0;
 echo '<script>
+var target;
 $(document).ready(function() {
   var background;
   $(".song").mouseenter(function() {
@@ -183,7 +186,20 @@ $(document).ready(function() {
   $(this).css("background-color",background);
   });
   $(".delete").click(function() {
-    alert($(this).attr("target"));
+    target=$(this);
+    if (confirm("Are you sure you want to delete this file?")) {      
+        $.ajax({
+         url: "'.$base.'/deletefile.php",
+         method: "POST",
+        data: {file:$(this).attr("target")}
+      }).done(function(data) {
+        if (data!="OK") {
+          alert(data);
+        } else {
+          target.parent().remove();      
+        }
+      });
+    }
   });
 });
 </script>';
@@ -204,9 +220,9 @@ foreach($names as $namecode=>$entry) {
       $count2++;
       if (strtolower(substr($file,strlen($file)-4))==".mp3") {
           $mp3info=getMP3BitRateSampleRate($file);          
-          $result.="<img class=\"delete\" target=\"".base64_encode($file)."\" src=\"pix/delete.png\"/><a title=\"$file\" target=\"_blank\" href=\"show/".base64_encode($file)."\">".basename($file)."</a> (".filesize($file).") ".$mp3info["bitRate"]."/".$mp3info["sampleRate"]."<BR>";
+          $result.="<span><img class=\"delete\" target=\"".base64_encode($file)."\" src=\"pix/delete.png\"/><a title=\"$file\" target=\"_blank\" href=\"show/".base64_encode($file)."\">".basename($file)."</a> (".filesize($file).") ".$mp3info["bitRate"]."/".$mp3info["sampleRate"]."<BR></span>";
       } else {
-        $result.="<img class=\"delete\" target=\"".base64_encode($file)."\" src=\"pix/delete.png\"/><a  title=\"$file\" target=\"_blank\" href=\"show/".base64_encode($file)."\">".basename($file)."</a> (".filesize($file).")<BR>";  
+        $result.="<span><img class=\"delete\" target=\"".base64_encode($file)."\" src=\"pix/delete.png\"/><a  title=\"$file\" target=\"_blank\" href=\"show/".base64_encode($file)."\">".basename($file)."</a> (".filesize($file).")<BR></span>";  
       }
     }
     echo "<div class=\"song\" style=\"padding:3px;margin-bottom:10px;".($mark?"background-color:lightgreen;":"background-color:lightyellow;")."\">$result</div>";
@@ -229,9 +245,9 @@ foreach($names as $namecode=>$entry) {
       $count2++;
       if (strtolower(substr($file,strlen($file)-4))==".mp3") {
           $mp3info=getMP3BitRateSampleRate($file);          
-          $result.="<img class=\"delete\" target=\"".base64_encode($file)."\" src=\"pix/delete.png\"/><a title=\"$file\" target=\"_blank\" href=\"show/".base64_encode($file)."\">".basename($file)."</a> (".filesize($file).") ".$mp3info["bitRate"]."/".$mp3info["sampleRate"]."<BR>";
+          $result.="<span><img class=\"delete\" target=\"".base64_encode($file)."\" src=\"pix/delete.png\"/><a title=\"$file\" target=\"_blank\" href=\"show/".base64_encode($file)."\">".basename($file)."</a> (".filesize($file).") ".$mp3info["bitRate"]."/".$mp3info["sampleRate"]."<BR></span>";
       } else {
-        $result.="<img class=\"delete\" target=\"".base64_encode($file)."\" src=\"pix/delete.png\"/><a  title=\"$file\" target=\"_blank\" href=\"show/".base64_encode($file)."\">".basename($file)."</a> (".filesize($file).")<BR>";  
+        $result.="<span><img class=\"delete\" target=\"".base64_encode($file)."\" src=\"pix/delete.png\"/><a  title=\"$file\" target=\"_blank\" href=\"show/".base64_encode($file)."\">".basename($file)."</a> (".filesize($file).")<BR></span>";  
       }
     }
     echo "<div class=\"song\" style=\"padding:3px;margin-bottom:10px;".($mark?"background-color:Lightsteelblue;":"background-color:Lightskyblue;")."\">$result</div>";

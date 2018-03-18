@@ -68,4 +68,7 @@ function dirscan($dirpath, $startpoint = "") {
 }
 ob_implicit_flush(true);
 ini_set('max_execution_time', 0);
-dirscan("E:/Media/Audio/Musique");
+foreach ($shares as $folder=>$value) {
+  break;
+}
+dirscan($folder);

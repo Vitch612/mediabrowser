@@ -2,7 +2,7 @@
 error_reporting(E_ERROR | E_PARSE);
 include "database.php";
 $max_search=1;
-$shares=["C:/movies"=>1,"E:/Media/Audio"=>0];
+$shares=["E:/Media/Audio/Musique"=>0,"C:/movies"=>1];
 $file_types=["image","audio","video","pdf","zip","exe","html","folder","other"];
 $file_icons=["pix/image.png","pix/mp3.png","pix/video.png","pix/pdf.png","pix/zip.png","pix/exe.png","pix/html.png","pix/folder.png","pix/text.png"];
 $base=substr($_SERVER["PHP_SELF"],0,strpos($_SERVER["PHP_SELF"],"/",1));
