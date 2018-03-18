@@ -2,6 +2,9 @@
 include "include.php";
 include "head.php";
 $names=[];
+$words=[];
+$rwords=[];
+$wordcount=0;
 function getMP3BitRateSampleRate($filename)
 {
     if (!file_exists($filename)) {
@@ -100,7 +103,10 @@ function getMP3BitRateSampleRate($filename)
 
 function dirscan($dirpath) {
   global $names;
-  $allowed="abcdefghijklmnopqrstuvwyz0123456789 ";
+  global $words;
+  global $rwords;
+  global $wordcount;
+  $allowed="abcdefghijklmnopqrstuvwyz ";
   $dir_handle = @opendir($dirpath) or die;
   while (($file = readdir($dir_handle))) {
     if ($file == "." || $file == "..") {
@@ -112,25 +118,58 @@ function dirscan($dirpath) {
     } else {
       $nametmp=strtolower(substr($file,0,strrpos($file,".")));      
       $name="";
+      $previous="";
       for ($i = 0; $i < strlen($nametmp); $i++) {
-        if (strpos($allowed,$nametmp[$i])!==false) {
-          $name.=$nametmp[$i];
+        $char=$nametmp[$i];
+        if ($char=="_" || $char=="-" || $char==".") {
+          $char=" ";
         }
-      }     
-      if (isset($names[$name])) {
-        $names[$name]["count"]++;
-        $names[$name]["path"][]=$fullpath;
+        if ($previous!="") {
+          if ($previous==" " && $char==" ") {
+            $char="";
+          }
+        }
+        if ($char!="")
+          $previous=$char;          
+        if (strpos($allowed,$char)!==false) {
+          $name .= $char;
+        }
+      }
+      $namewords = explode(" ", $name);
+      $namesig = [];
+      foreach ($namewords as $word) {
+        if ($word != "") {
+          if (!isset($words[$word])) {
+            $words[$word] = $wordcount;
+            $rwords[$wordcount] = $word;
+            $wordcount++;
+          }
+          $namesig[$words[$word]] = $words[$word];
+        }
+      }
+      asort($namesig);
+      $namecode = "";
+      foreach($namesig as $point) {
+        $namecode.=$point."/";
+      }      
+      if (isset($names[$namecode])) {
+        $names[$namecode]["count"]++;
+        $names[$namecode]["path"][]=$fullpath;
       } else {
-        $names[$name]["count"]=1;
-        $names[$name]["path"][]=$fullpath;
+        $names[$namecode]["sig"]=$namesig;
+        $names[$namecode]["name"]=$name;
+        $names[$namecode]["count"]=1;
+        $names[$namecode]["path"][]=$fullpath;
       }
     }
   }
   closedir($dir_handle);        
 }
 
+
 ob_implicit_flush(true);
 show_nav();
+
 dirscan("E:/Media/Audio/Musique");
 $count1=0;
 $count2=0;
@@ -142,12 +181,42 @@ $(document).ready(function() {
   $(this).css("background-color","pink");
   }).mouseleave(function() {  
   $(this).css("background-color",background);
-  });   
+  });
+  $(".delete").click(function() {
+    alert($(this).attr("target"));
+  });
 });
 </script>';
-foreach($names as $name=>$entry) {
-  if ($entry["count"]>1) {
-    $result="<B>".$name."</B><BR>";
+ 
+ 
+foreach($names as $namecode=>$entry) {
+  if ($entry["count"]>1 && count($entry["sig"])>1) {
+    $string="";
+    $result="<B>".$entry["name"]."</B><BR>";
+    $count1++;
+    $previous="";    
+    foreach($entry["path"] as $file) {
+      $mark=false;
+      if ($previous!="")
+        if (strtolower(basename($file))!=$previous)
+          $mark=true;
+      $previous=strtolower(basename($file));
+      $count2++;
+      if (strtolower(substr($file,strlen($file)-4))==".mp3") {
+          $mp3info=getMP3BitRateSampleRate($file);          
+          $result.="<img class=\"delete\" target=\"".base64_encode($file)."\" src=\"pix/delete.png\"/><a title=\"$file\" target=\"_blank\" href=\"show/".base64_encode($file)."\">".basename($file)."</a> (".filesize($file).") ".$mp3info["bitRate"]."/".$mp3info["sampleRate"]."<BR>";
+      } else {
+        $result.="<img class=\"delete\" target=\"".base64_encode($file)."\" src=\"pix/delete.png\"/><a  title=\"$file\" target=\"_blank\" href=\"show/".base64_encode($file)."\">".basename($file)."</a> (".filesize($file).")<BR>";  
+      }
+    }
+    echo "<div class=\"song\" style=\"padding:3px;margin-bottom:10px;".($mark?"background-color:lightgreen;":"background-color:lightyellow;")."\">$result</div>";
+  }
+}
+
+foreach($names as $namecode=>$entry) {
+  if ($entry["count"]>1 && count($entry["sig"])==1) {
+    $string="";
+    $result="<B>".$entry["name"]."</B><BR>";
     $count1++;
     $previous="";
     
@@ -160,16 +229,34 @@ foreach($names as $name=>$entry) {
       $count2++;
       if (strtolower(substr($file,strlen($file)-4))==".mp3") {
           $mp3info=getMP3BitRateSampleRate($file);          
-          $result.="<a title=\"$file\" href=\"show/".base64_encode($file)."\">".basename($file)."</a> (".filesize($file).") ".$mp3info["bitRate"]."/".$mp3info["sampleRate"]."<BR>";
+          $result.="<img class=\"delete\" target=\"".base64_encode($file)."\" src=\"pix/delete.png\"/><a title=\"$file\" target=\"_blank\" href=\"show/".base64_encode($file)."\">".basename($file)."</a> (".filesize($file).") ".$mp3info["bitRate"]."/".$mp3info["sampleRate"]."<BR>";
       } else {
-        $result.="<a  title=\"$file\" href=\"show/".base64_encode($file)."\">".basename($file)."</a> (".filesize($file).")<BR>";  
+        $result.="<img class=\"delete\" target=\"".base64_encode($file)."\" src=\"pix/delete.png\"/><a  title=\"$file\" target=\"_blank\" href=\"show/".base64_encode($file)."\">".basename($file)."</a> (".filesize($file).")<BR>";  
       }
     }
-    echo "<div class=\"song\" style=\"padding:3px;margin-bottom:10px;".($mark?"background-color:lightgreen;":"background-color:lightyellow;")."\">$result</div>";
+    echo "<div class=\"song\" style=\"padding:3px;margin-bottom:10px;".($mark?"background-color:Lightsteelblue;":"background-color:Lightskyblue;")."\">$result</div>";
   }
 }
+echo $count1." ".$count2."<BR>";
 
-echo $count1." ".$count2;
+/*
+$count=0;
+foreach($names as $namecode=>$entry) {
+  if ($entry["count"]==1) {
+    $string="";
+    $count++;
+    foreach($entry["path"] as $file) {
+      $result="<a  title=\"$file\" target=\"_blank\" href=\"show/".base64_encode($file)."\">".basename($file)."</a><BR>";
+    }
+    echo "<div class=\"song\" style=\"padding:3px;margin-bottom:10px;background-color:antiquewhite;\">$result</div>";
+  }
+}
+echo $count."<BR>";
+*/
 
-
-
+//$result=$mysql->select("files",["*"],"Filename LIKE '%.rm'");
+//foreach($result as $row) {
+//  echo $row["Path"]."<BR>";
+////  if (unlink($row["Path"]))
+////    $mysql->delete("files","`ID`='".$row["ID"]."'");
+//}

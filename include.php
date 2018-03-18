@@ -97,7 +97,7 @@ function show_nav() {
   global $base;
   echo "<div class=\"row\"><div class=\"col-xs-12 navmenu\"><ul><li><a href=\"$base\"><img src=\"$base/pix/home.png\"/></a></li><li>
     <a href=\"".$base."/playlists.php\"><img src=\"$base/pix/playlist.png\"/></a>
-    </li><li><a href=\"".$base."/showduplicates.php\"><img width=\"35\" height=\"35\" style=\"margin-bottom:3px;\" src=\"$base/pix/duplicate.png\"/></a></li></ul></div></div>";
+    </li><li><a href=\"".$base."/showduplicates.php\"><img style=\"margin-bottom:3px;\" src=\"$base/pix/duplicate.png\"/></a></li></ul></div></div>";
 }
 
 function clean_dirpath($path) {

@@ -95,6 +95,10 @@ padding:0;
 .mycollapsed {
   display:none;
 }
+.delete {
+  margin-bottom:-7px;
+  margin-right:5px;
+}
 .b1 {
 float:left;
 margin:0;
