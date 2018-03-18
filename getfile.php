@@ -212,12 +212,6 @@ if (!function_exists('mime_content_type')) {
   }
 }
 
-//function logmsg($text) {
-// $log=fopen("c:/web/browse/logfile.txt","a");
-// fwrite($log,number_format(microtime(true),4).": $text\n");
-// fclose($log);
-//}
-
 //function script_end() {
 //    if (connection_aborted()) {
       //logmsg("");

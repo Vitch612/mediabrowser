@@ -9,21 +9,21 @@ function shutdown()
     deletePersistent("search");
 }
 
-function dirsearch($dirpath,$searchstring) {
-	$dir_handle = @opendir($dirpath) or die;
-	while ($file = readdir($dir_handle)) {
-		if($file == "." || $file == "..")
-			continue;
-    $entry = $dirpath."/".$file;
-		if (is_dir($entry)) {
-      dirsearch($entry,$searchstring);
-		} else {
-      if (strpos(strtolower($file),  strtolower($searchstring))!==false) {
-        echo $entry."<BR>";
-      }
-    }    
-	}
-	closedir($dir_handle);
+function dirsearch($dirpath, $searchstring) {
+    $dir_handle = @opendir($dirpath) or die;
+    while ($file = readdir($dir_handle)) {
+        if ($file == "." || $file == "..")
+            continue;
+        $entry = $dirpath . "/" . $file;
+        if (is_dir($entry)) {
+            dirsearch($entry, $searchstring);
+        } else {
+            if (strpos(strtolower($file), strtolower($searchstring)) !== false) {
+                echo $entry . "<BR>";
+            }
+        }
+    }
+    closedir($dir_handle);
 }
 
 include("include.php");

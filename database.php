@@ -5,7 +5,7 @@ class database {
   public $insert_id;
 
   function __construct() {        
-      $this->conn=new mysqli("localhost", "browsedbuser", "password", "browse");
+      $this->conn=new mysqli("localhost", "browse", "password", "browse");
   }
 
   public function isConnected() {
@@ -99,7 +99,7 @@ class database {
         }
       }
     } else {
-      addlog([$this->conn->error,$sql]);
+      logmsg([$this->conn->error,$sql]);
       $this->error=$this->conn->error;
     }
     return $data;
