@@ -3,7 +3,7 @@ include "include.php";
 include "head.php";
 
 function search() {
-  echo '<form id="searchform" method="post" action="search.php"><input type="text" id="searchstring" name="searchstring"/><input type="submit" id="searchbutton" value="Search"><div style="margin-left:10px;" id="displaytext"></div></form>';
+  echo '<form id="searchform" method="post" action="search.php"><input type="text" id="searchstring" name="searchstring"/><input type="submit" id="searchbutton" value="Search"><img width="20" height="20" class="progress" style="margin-bottom:-5px;margin-left:3px;display:none;" src="pix/progress.gif"><div style="margin-left:10px;" id="displaytext"></div></form>';
 }
 
 function getsafe($var,$name="",$spacer="") {

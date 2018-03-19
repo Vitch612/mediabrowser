@@ -169,7 +169,7 @@ function dirscan($dirpath) {
 ini_set('max_execution_time', 0);
 ob_implicit_flush(true);
 show_nav();
-echo "Please wait for directory scan to complete before results are displayed.(note: bitrates are inaccurate in case of vbr mp3 files)<BR><BR>";
+echo 'Please wait for directory scan to complete before results are displayed. <img style="margin-bottom:-4px;" width="20" height="20" class="progress" src="pix/progress.gif"><BR>(note: bitrates are inaccurate in case of vbr mp3 files)<BR><BR>';
 ob_flush();
 foreach ($shares as $folder=>$value) {
   break;
@@ -181,6 +181,7 @@ echo '<script>
 var target;
 $(document).ready(function() {
   var background;
+  $(".progress").hide();
   $(".song").mouseenter(function() {
   background=$(this).css("background-color");
   $(this).css("background-color","pink");

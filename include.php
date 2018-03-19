@@ -3,6 +3,7 @@ error_reporting(E_ERROR | E_PARSE);
 include "database.php";
 $max_search=1;
 $shares=["E:/Media/Audio/Musique"=>0,"C:/movies"=>1];
+//$shares=["D:/Media/Audio/Musique"=>0,"E:/movies"=>1];
 $file_types=["image","audio","video","pdf","zip","exe","html","folder","other"];
 $file_icons=["pix/image.png","pix/mp3.png","pix/video.png","pix/pdf.png","pix/zip.png","pix/exe.png","pix/html.png","pix/folder.png","pix/text.png"];
 $base=substr($_SERVER["PHP_SELF"],0,strpos($_SERVER["PHP_SELF"],"/",1));
@@ -99,7 +100,7 @@ function show_nav() {
    <li><a title=\"Homepage\" href=\"$base\"><img src=\"$base/pix/home.png\"/></a></li>
    <li><a title=\"Manage Playlists\" href=\"$base/playlists.php\"><img src=\"$base/pix/playlist.png\"/></a></li>
    <li><a id=\"DuplicatesPage\" title=\"Manage Duplicates Sorted By Name\" href=\"$base/showduplicates.php\"><img src=\"$base/pix/duplicate.png\"/></a></li>
-   <li><a id=\"ScanPage\" title=\"Scan For Duplicates Based On File Contents And Length\" href=\"$base/scanfolders.php\"><img src=\"$base/pix/scan.png\"/></a></li>
+   <li><a id=\"ScanPage\" title=\"Scan For Duplicates Based On File Contents And Length\" href=\"#\"><img src=\"$base/pix/scan.png\"/></a></li>
     </ul></div></div>";
 }
 

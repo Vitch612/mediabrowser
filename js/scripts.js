@@ -16,8 +16,10 @@ function xhrProvider() {
   return xhr;
 }
 
-$(document).ready(function() {  
+$(document).ready(function() {
+  $("#ScanPage").attr("href","scanfolders.php");
   $("#searchbutton").click(function(event) {
+    $(".progress").show();
     lastsize = 0;
     xhr.abort();
     $("#displaytext").html("");
@@ -31,6 +33,7 @@ $(document).ready(function() {
         setTimeout(iteratethroughresults,10);
       }
     }).done(function() {
+      $(".progress").hide();
     });
     event.preventDefault();
   });  

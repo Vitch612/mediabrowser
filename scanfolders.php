@@ -68,16 +68,18 @@ function dirscan($dirpath, $startpoint = "") {
 }
 
 ini_set('max_execution_time', 0);
+//ignore_user_abort(true);
 $allowedruntime=ini_get('max_execution_time');
 if ($allowedruntime>10)
   $allowedruntime-=10;
 ob_implicit_flush(true);
 show_nav();
+echo '<script>$(document).ready(function() {$(".progress").hide();});</script>';
 
 if ($allowedruntime==0) {
-  echo "Scanning with no time limit, closing this page before the scan is complete can cause data corruption.<BR><BR>";
+  echo 'Scanning with no time limit, this might take a while, please wait for results. <img style="margin-bottom:-4px;" width="20" height="20" class="progress" src="pix/progress.gif"><BR><BR>';
 } else {
-  echo "Scanning with a time limit of $allowedruntime seconds, closing this page before the scan is complete can cause data corruption.<BR><BR>";
+  echo 'Scanning with a time limit of '.$allowedruntime.' seconds, please wait for results. <img width="20" height="20" class="progress" src="pix/progress.gif"><BR><BR>';
 }
 ob_flush();
 foreach ($shares as $folder=>$value) {

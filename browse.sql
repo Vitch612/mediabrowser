@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Mar 19, 2018 at 12:13 AM
+-- Generation Time: Mar 19, 2018 at 12:37 AM
 -- Server version: 5.7.21
 -- PHP Version: 7.2.2
 
@@ -56,6 +56,31 @@ CREATE TABLE `files` (
   `Modtime` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `playlist`
+--
+
+DROP TABLE IF EXISTS `playlist`;
+CREATE TABLE `playlist` (
+  `ID` int(11) NOT NULL,
+  `Name` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `playlistentries`
+--
+
+DROP TABLE IF EXISTS `playlistentries`;
+CREATE TABLE `playlistentries` (
+  `Playlist` int(11) NOT NULL,
+  `File` int(11) NOT NULL,
+  `Weight` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 --
 -- Indexes for dumped tables
 --
@@ -76,6 +101,12 @@ ALTER TABLE `files`
   ADD KEY `ID` (`ID`);
 
 --
+-- Indexes for table `playlist`
+--
+ALTER TABLE `playlist`
+  ADD PRIMARY KEY (`ID`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -90,6 +121,12 @@ ALTER TABLE `duplicates`
 --
 ALTER TABLE `files`
   MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=91837;
+
+--
+-- AUTO_INCREMENT for table `playlist`
+--
+ALTER TABLE `playlist`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
