@@ -1,20 +1,23 @@
 <?php
 include "include.php";
+authenticate();
 include "head.php";
 $abort = false;
 $active = true;
 $starttime = time();
 $allowedruntime = 0;
+$shareid=0;
 //$chunksize = 2048;
 
 function dirscan($dirpath, $startpoint = "") {
+  global $share;
   global $abort;
   global $active;
   global $starttime;
   global $allowedruntime;
-  //global $chunksize;
   global $mysql;
-
+  global $shareid;
+  //global $chunksize;  
   $fullpath = $dirpath;
   $dir_handle = @opendir($dirpath) or die;
   while (($file = readdir($dir_handle)) && !$abort) {
@@ -35,7 +38,7 @@ function dirscan($dirpath, $startpoint = "") {
     } else {
       if ($active) {
         try {
-          $search = $mysql->select("files", ["ID"], "`Path`='".$mysql->conn->real_escape_string($fullpath)."'");
+          $search = $mysql->select("files", ["ID"], "`Path`='".$mysql->conn->real_escape_string(substr($fullpath,strpos($fullpath,$share)+strlen($share)))."'");
           if (count($search) == 0) {
             $fh = fopen($fullpath, "r");
 //          if (filesize($fullpath) > 2 * $chunksize) {            
@@ -47,9 +50,9 @@ function dirscan($dirpath, $startpoint = "") {
             $md5 = md5(fread($fh, filesize($fullpath)));
 //          }
             fclose($fh);
-            if (!$mysql->insert("files", ["Path" => $fullpath, "Filename" => $file, "MD5" => $md5, "Size" => filesize($fullpath), "Modtime" => filemtime($fullpath)])) {
+            if (!$mysql->insert("files", ["Share"=>$shareid, "Path" => substr($fullpath,strpos($fullpath,$share)+strlen($share)), "Filename" => $file, "MD5" => $md5, "Size" => filesize($fullpath), "Modtime" => filemtime($fullpath)])) {
               if (strpos($mysql->error, "Duplicate entry") >= 0) {
-                if (!$mysql->insert("duplicates", ["Path" => $fullpath, "Filename" => $file, "MD5" => $md5, "Size" => filesize($fullpath), "Modtime" => filemtime($fullpath)])) {
+                if (!$mysql->insert("duplicates", ["Share"=>$shareid, "Path" => $fullpath, "Filename" => $file, "MD5" => $md5, "Size" => filesize($fullpath), "Modtime" => filemtime($fullpath)])) {
                   logmsg("insert in duplicates: " . $mysql->error);
                 }
               } else {
@@ -76,24 +79,33 @@ ob_implicit_flush(true);
 show_nav();
 echo '<script>$(document).ready(function() {$(".progress").hide();});</script>';
 
+echo '<div class="row"><div class="col-xs-12">';
 if ($allowedruntime==0) {
-  echo 'Scanning with no time limit, this might take a while, please wait for results. <img style="margin-bottom:-4px;" width="20" height="20" class="progress" src="pix/progress.gif"><BR><BR>';
+  echo 'Scanning with no time limit, this might take a while, please wait for results. <img width="20" height="20" class="progress" src="pix/progress.gif"><BR><BR>';
 } else {
   echo 'Scanning with a time limit of '.$allowedruntime.' seconds, please wait for results. <img width="20" height="20" class="progress" src="pix/progress.gif"><BR><BR>';
 }
 ob_flush();
-foreach ($shares as $folder=>$value) {
+foreach ($shares as $share=>$value) {
   break;
 }
-dirscan($folder);
+$result=$mysql->select("shares",["*"]);
+foreach($result as $row) {
+  if ($row["Path"]==$share) {
+    $shareid=(int)$row["ID"];
+  }
+}
+dirscan($share);
 
 $dups=$mysql->select("duplicates",["*"]);
 if (count($dups)==0) {
   echo "No duplicates";
 } else {
   foreach($dups as $row) {
-    echo $row["Path"]."<BR>";
+    echo $share.$row["Path"]."<BR>";
     $file=$mysql->select("files",["*"],"`MD5`='".$row["MD5"]."' AND `Size`='".$row["Size"]."'");
-    echo $file[0]["Path"]."<BR><BR>";
+    echo $share.$file[0]["Path"]."<BR><BR>";
   }  
 }
+
+echo '</div></div></div></body></html>';

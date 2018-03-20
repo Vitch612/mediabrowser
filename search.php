@@ -19,7 +19,7 @@ function dirsearch($dirpath, $searchstring) {
             dirsearch($entry, $searchstring);
         } else {
             if (strpos(strtolower($file), strtolower($searchstring)) !== false) {
-                echo $entry . "<BR>";
+              echo "<a  title=\"$entry\" target=\"_blank\" href=\"show/".base64_encode($entry)."\">".basename($entry)."</a><BR>";
             }
         }
     }
@@ -49,5 +49,4 @@ if (isset($_REQUEST["searchstring"]) && $_REQUEST["searchstring"]!="") {
     if ($value==1)
       dirsearch($share,$_REQUEST["searchstring"]);
   }
-  echo "Search complete";
 }

@@ -1,5 +1,6 @@
 <?php
 include "include.php";
+authenticate();
 include "head.php";
 $names=[];
 $words=[];
@@ -169,7 +170,7 @@ function dirscan($dirpath) {
 ini_set('max_execution_time', 0);
 ob_implicit_flush(true);
 show_nav();
-echo 'Please wait for directory scan to complete before results are displayed. <img style="margin-bottom:-4px;" width="20" height="20" class="progress" src="pix/progress.gif"><BR>(note: bitrates are inaccurate in case of vbr mp3 files)<BR><BR>';
+echo '<div class="row box"><div class="col-xs-12">Please wait for directory scan to complete before results are displayed. <img width="20" height="20" class="progress" src="pix/progress.gif"><BR>(note: bitrates are inaccurate in case of vbr mp3 files)<BR><BR>';
 ob_flush();
 foreach ($shares as $folder=>$value) {
   break;
@@ -280,3 +281,4 @@ echo $count."<BR>";
 ////    $mysql->delete("files","`ID`='".$row["ID"]."'");
 //}
 
+echo '</div></div></div></body></html>';

@@ -3,7 +3,8 @@ include "include.php";
 include "head.php";
 
 function search() {
-  echo '<form id="searchform" method="post" action="search.php"><input type="text" id="searchstring" name="searchstring"/><input type="submit" id="searchbutton" value="Search"><img width="20" height="20" class="progress" style="margin-bottom:-5px;margin-left:3px;display:none;" src="pix/progress.gif"><div style="margin-left:10px;" id="displaytext"></div></form>';
+  echo '<div class="row box"><div class="col-xs-12"><div class="row" style="margin-top:10px;"><div class="col-xs-6"><form id="searchform" method="post" action="search.php"><input class="form-control" type="text" id="searchstring" name="searchstring"/></div><div class="col-xs-1 searchbutton"><input class="btn btn-primary" type="submit" id="searchbutton" value="Search"/></div><div class="col-xs-1 searchprogress"><img width="20" height="20" class="img-fluid progress" src="pix/progress.gif"></form></div></div>';
+  echo '<div class="row"><div class="col-xs-12" style="margin-left:10px;" id="displaytext"></div></div></div></div>';
 }
 
 function getsafe($var,$name="",$spacer="") {
@@ -103,11 +104,11 @@ function dirlist($dirpath,$show=0) {
   global $file_types;
   global $file_icons;
   $id=get_id();
-  echo "<div class=\"dirList row\"><div class=\"col-xs-12\">";
+  echo "<div class=\"dirList box row\"><div class=\"col-xs-12\">";
   echo "<div class=\"row\"><div class=\"col-xs-12\"><a href=\"#$id\" class=\"nolink\">Folder: <b>".clean_dirpath($dirpath)."</b></a></div></div>";
   
 	$dir_handle = @opendir($dirpath) or die;
-	echo "<div id=\"$id\"".($show==0?" class=\"row mycollapsed\"":"")."><div class=\"col-xs-12\"><table cellspacing=\"0\" cellpadding=\"2\" border=\"0\" class=\"table\" width=\"100%\">";
+	echo "<div id=\"$id\" class=\"row".($show==0?" mycollapsed":"")."\"><div class=\"col-xs-12\"><table class=\"table-responsive\" width=\"100%\">";
 	$TheLinkedFile = $dirpath."/..";
   $cpath= base64_encode($TheLinkedFile);
 	echo "<tr bgcolor=\"FFFFFF\"><td><a href=\"?path=$cpath\"><img class=\"img-fluid\" src=\"pix/up.png\"/></a></td><td width=\"100%\"><a href=\"?path=$cpath\">..</a></td><td></td></tr>";
@@ -184,4 +185,4 @@ if (isset($_GET["path"])) {
 }
 //echo '<pre>'.print_r($_SERVER,true).'</pre>';
 //echo '<div class="incGetSafe">'.debug().'</div>';
-include "foot.php";
+echo '</div></body></html>';

@@ -30,10 +30,10 @@ $(document).ready(function() {
     canplay=true;
   });
   video.on("error", function () {
-    alert("error");
+    //alert("error");
   });
   video.on("stalled", function () {
-    alert("stalled");
+    //alert("stalled");
   });
 
 

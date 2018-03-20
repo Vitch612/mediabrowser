@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Mar 19, 2018 at 12:37 AM
+-- Generation Time: Mar 20, 2018 at 03:20 AM
 -- Server version: 5.7.21
 -- PHP Version: 7.2.2
 
@@ -21,8 +21,6 @@ SET time_zone = "+00:00";
 --
 -- Database: `browse`
 --
-CREATE DATABASE IF NOT EXISTS `browse` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
-USE `browse`;
 
 -- --------------------------------------------------------
 
@@ -33,6 +31,7 @@ USE `browse`;
 DROP TABLE IF EXISTS `duplicates`;
 CREATE TABLE `duplicates` (
   `ID` int(11) NOT NULL,
+  `Share` int(11) NOT NULL,
   `Path` varchar(4096) NOT NULL,
   `Filename` varchar(255) NOT NULL,
   `MD5` char(32) NOT NULL,
@@ -49,6 +48,7 @@ CREATE TABLE `duplicates` (
 DROP TABLE IF EXISTS `files`;
 CREATE TABLE `files` (
   `ID` int(11) NOT NULL,
+  `Share` int(11) NOT NULL,
   `Path` varchar(4096) NOT NULL,
   `Filename` varchar(255) NOT NULL,
   `MD5` char(32) NOT NULL,
@@ -81,6 +81,19 @@ CREATE TABLE `playlistentries` (
   `Weight` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `shares`
+--
+
+DROP TABLE IF EXISTS `shares`;
+CREATE TABLE `shares` (
+  `ID` int(11) NOT NULL,
+  `Path` varchar(1024) NOT NULL,
+  `Searchable` tinyint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 --
 -- Indexes for dumped tables
 --
@@ -107,6 +120,13 @@ ALTER TABLE `playlist`
   ADD PRIMARY KEY (`ID`);
 
 --
+-- Indexes for table `shares`
+--
+ALTER TABLE `shares`
+  ADD PRIMARY KEY (`ID`),
+  ADD UNIQUE KEY `Path` (`Path`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -127,6 +147,12 @@ ALTER TABLE `files`
 --
 ALTER TABLE `playlist`
   MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `shares`
+--
+ALTER TABLE `shares`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

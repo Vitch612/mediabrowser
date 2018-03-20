@@ -1,0 +1,171 @@
+.mediadiv {
+  margin-bottom:20px;
+}
+.searchprogress {
+  max-width:20px;
+}
+.progress {
+  background-color:transparent;
+  margin-bottom:0px;
+}
+.searchprogress img {
+  display:none;
+  margin-left:-20px;
+  margin-top:7px;
+}
+.searchbutton input {
+  margin-left:-15px;
+}
+.searchbutton {
+  min-width:80px;
+  max-width:80px;
+}
+
+.box {
+  box-shadow: 0 0 5px black;
+  padding:10px;
+  position:relative;
+  margin-bottom:20px;
+  margin-left:10px;
+  margin-right:10px;
+}
+.hilite {
+  background-color:#FFFFFF !important;
+  color:#000000 !important;
+}
+.navmenu ul li {
+  display:inline;
+  border-width:0;
+  background-color:transparent;
+  margin-right:20px;
+}
+.jsdebug {
+  background-color:white;
+  border-width:1px;
+  border-style:solid;
+  border-color:black;
+}
+.spacer{
+  float:left;
+  /*background-color:#FFFF00;*/
+  margin:0;
+  padding:0;
+}
+.mycollapsed {
+  display:none;
+}
+#aplay, #vplay{
+  width:75%;
+  height: auto;
+  margin-top:30px;
+}
+.delete {
+  margin-bottom:0px;
+  margin-right:5px;    
+}
+.b1 {
+  float:left;
+  margin:0;
+  padding:0;
+  font-weight: bold;
+  background-color:#AAAAFF;
+}
+.b2 {
+  margin:0;
+  padding:0;
+  margin-left:80px;
+  color:#1010FF;
+  background-color:#FF9999;
+}
+.ISNULL {
+  padding:0;
+  margin:0;
+  margin-left:80px;
+  color:#EE4422;
+  background-color:#000055;
+  font-weight: bold;
+}
+.name {
+  width:100%;
+  font-weight: bold;
+  text-decoration: underline;
+  margin:0;
+  background-color:#0000FF;
+  padding:0;
+}
+.key {
+  width:100%;
+  font-weight: bold;
+  background-color:#55FFCC;
+  margin:0;
+  padding:0;
+}
+.panic {
+  width:100%;
+  font-weight: bold;
+  background-color:#FF0000;
+  margin:0;
+  padding:0;
+}
+.b0 {
+  width:100%;
+  position:relative;
+  margin:0;
+  padding:0;
+}
+.getSafe {
+  position:relative;
+  overflow:auto;
+  margin:0;
+  padding:0;
+}
+.incGetSafe {
+  position:relative;
+  float:left;
+  width:100%;
+  height:92%;
+  margin:0;
+  background-color:#FFFFFF;
+  padding:0;
+  overflow:auto;
+}
+.dirList {
+  overflow:auto;
+}
+.welcome {
+  width:100%;
+  height:15px;
+  background-color:#DDDDDD;
+  adding:0;
+  margin:0;
+}
+.table-responsive {
+  margin-top:10px;
+  margin-bottom:10px;
+}
+.table-responsive td {
+  min-width:20px !important;
+  padding:3px;
+}
+.nolink {
+  text-decoration:none !important;
+  cursor:default !important;
+  color:black;
+}
+.filelink {
+  text-decoration:none;
+  color: #31708f;
+}
+.bodydiv {
+  word-wrap:break-word;
+  font-size:16px;
+  padding:5px;
+  margin:0;
+}
+body
+{
+    background-color:lightgrey;
+    text-align:left;
+    margin:0;
+    padding:10px;
+}
