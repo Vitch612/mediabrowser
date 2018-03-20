@@ -149,6 +149,7 @@ function check_permission($path) {
 }
 
 function authenticate() {
+  global $base;
   if (readPersistent("password") != "") {
     session_start();    
     if (!isset($_SESSION["loggedin"])) {
