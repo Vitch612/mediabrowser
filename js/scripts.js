@@ -34,7 +34,6 @@ function gotill(got) {
 
 $(document).ready(function () {
     $("#ScanPage").attr("href", "scanfolders.php");
-    
     $("#searchbutton").click(function (event) {
         $(".progress").show();
         lastsize = 0;
@@ -54,7 +53,6 @@ $(document).ready(function () {
         });
         event.preventDefault();
     });
-    
     $("#ScanPage").click(function (e) {
         if (!confirm("The scan page can take a long time to run, are you sure you want to open it?")) {
             e.preventDefault();
@@ -69,32 +67,26 @@ $(document).ready(function () {
         event.preventDefault();
         return false;
     });
-
     $(".b0").children().not(".key").not(".spacer").not(".name").parent().hide();
     $(".spacer").click(function () {
         $(".spacer").hide();
     });
-
     $(".b1").click(function () {
         $(".b1").hide();
 
     });
-
     $(".b2").click(function () {
         $(".b2").hide();
     });
-
     $(".key").click(function () {
         gotill($(this).parent().next());
     });
-
     $(".name").click(function () {
         $(".b2").show();
         $(".spacer").show();
         $(".b1").show();
         $(".b0").show();
         $(".key").show();
-
     });
 
     $(".b0").hover(function () {
@@ -102,12 +94,13 @@ $(document).ready(function () {
     }, function () {
         $(this).children().removeClass("hilite");
     });
-    
-    var scripts = document.getElementsByTagName('script');
-    var base = scripts[scripts.length-1].src;
-    base=base.substring(0,base.lastIndexOf("/")+1);
-    var sc=document.createElement("script");
-    sc.setAttribute('type', 'text/javascript');
-    sc.setAttribute('src', base+"bootstrap.min.js");
-    document.body.appendChild(sc);
+    /*
+     var scripts = document.getElementsByTagName('script');
+     var base = scripts[scripts.length-1].src;
+     base=base.substring(0,base.lastIndexOf("/")+1);
+     var sc=document.createElement("script");
+     sc.setAttribute('type', 'text/javascript');
+     sc.setAttribute('src', base+"bootstrap.min.js");
+     document.documentElement.appendChild(sc);
+     */
 });

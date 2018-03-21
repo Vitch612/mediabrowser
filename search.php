@@ -8,18 +8,23 @@ function shutdown()
   else 
     deletePersistent("search");
 }
-
-function dirsearch($dirpath, $searchstring) {
+$count=0;
+function dirsearch($dirpath, $searchstring,$playlist=false) {
+    global $count;
     $dir_handle = @opendir($dirpath) or die;
     while ($file = readdir($dir_handle)) {
         if ($file == "." || $file == "..")
             continue;
         $entry = $dirpath . "/" . $file;
         if (is_dir($entry)) {
-            dirsearch($entry, $searchstring);
+            dirsearch($entry, $searchstring,$playlist);
         } else {
             if (strpos(strtolower($file), strtolower($searchstring)) !== false) {
-              echo "<a  title=\"$entry\" target=\"_blank\" href=\"show/".base64_encode($entry)."\">".basename($entry)."</a><BR>";
+              $count++;
+              if ($playlist)
+                echo '<img target="'.$count.'" src="pix/add.png" width="15" height="15" style="margin-right:10px;margin-bottom:4px;" class="addtoplaylist"/><a id="'.$count.'" title="$entry" target="_blank" href="show/'.base64_encode($entry).'">'.basename($entry).'</a><BR>';
+              else
+                echo "<a  title=\"$entry\" target=\"_blank\" href=\"show/".base64_encode($entry)."\">".basename($entry)."</a><BR>"; 
             }
         }
     }
@@ -44,9 +49,14 @@ ob_implicit_flush(1);
 
 
 
-if (isset($_REQUEST["searchstring"]) && $_REQUEST["searchstring"]!="") {
-  foreach ($shares as $share=>$value) {
-    if ($value==1)
+if (isset($_REQUEST["searchstring"]) && $_REQUEST["searchstring"]!="" && isset($_REQUEST["playlist"])) {
+  foreach ($shares as $share=>$info) {
+    if ($info["searchable"]==1)
+      dirsearch($share,$_REQUEST["searchstring"],true);
+  }
+} else if (isset($_REQUEST["searchstring"]) && $_REQUEST["searchstring"]!="") {
+  foreach ($shares as $share=>$info) {
+    if ($info["searchable"]==1)
       dirsearch($share,$_REQUEST["searchstring"]);
   }
 }

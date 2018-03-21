@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Mar 20, 2018 at 03:20 AM
+-- Generation Time: Mar 21, 2018 at 03:36 PM
 -- Server version: 5.7.21
 -- PHP Version: 7.2.2
 
@@ -76,6 +76,7 @@ CREATE TABLE `playlist` (
 
 DROP TABLE IF EXISTS `playlistentries`;
 CREATE TABLE `playlistentries` (
+  `ID` int(11) NOT NULL,
   `Playlist` int(11) NOT NULL,
   `File` int(11) NOT NULL,
   `Weight` int(11) NOT NULL
@@ -111,13 +112,23 @@ ALTER TABLE `duplicates`
 ALTER TABLE `files`
   ADD PRIMARY KEY (`ID`),
   ADD UNIQUE KEY `unique_index` (`MD5`,`Size`),
-  ADD KEY `ID` (`ID`);
+  ADD KEY `ID` (`ID`),
+  ADD KEY `Share` (`Share`);
 
 --
 -- Indexes for table `playlist`
 --
 ALTER TABLE `playlist`
-  ADD PRIMARY KEY (`ID`);
+  ADD PRIMARY KEY (`ID`),
+  ADD UNIQUE KEY `Name` (`Name`);
+
+--
+-- Indexes for table `playlistentries`
+--
+ALTER TABLE `playlistentries`
+  ADD PRIMARY KEY (`ID`),
+  ADD KEY `Playlist` (`Playlist`),
+  ADD KEY `File` (`File`);
 
 --
 -- Indexes for table `shares`
@@ -146,13 +157,36 @@ ALTER TABLE `files`
 -- AUTO_INCREMENT for table `playlist`
 --
 ALTER TABLE `playlist`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
+
+--
+-- AUTO_INCREMENT for table `playlistentries`
+--
+ALTER TABLE `playlistentries`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT for table `shares`
 --
 ALTER TABLE `shares`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `files`
+--
+ALTER TABLE `files`
+  ADD CONSTRAINT `files_ibfk_1` FOREIGN KEY (`Share`) REFERENCES `shares` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `playlistentries`
+--
+ALTER TABLE `playlistentries`
+  ADD CONSTRAINT `playlistentries_ibfk_1` FOREIGN KEY (`Playlist`) REFERENCES `playlist` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `playlistentries_ibfk_2` FOREIGN KEY (`File`) REFERENCES `files` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

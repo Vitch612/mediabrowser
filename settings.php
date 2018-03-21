@@ -8,7 +8,7 @@ function getshares() {
     $sharesform.='<div class="row"><div class="col-md-2"><img class="delete form-group" target="'.$row["ID"].'" src="pix/delete.png"/><label style="position:relative;top:1px;">Searchable&nbsp;</label><input style="position:relative;top:2px;" type="checkbox" class="form-check-input" name="search_'.$row["ID"].'"'.($row["Searchable"]?"checked":"").'></div><div class="col-md-10">'.$row["Path"].'</div></div>';
   }
   if (count($result)>0)
-    $sharesform.='<div class="row"><div class="col-md-12"><input class="btn btn-primary" style="margin-top:10px;margin-bottom:-10px;" type="submit" value="Save" name="Save"/></div></div></form></div></div>';
+    $sharesform.='<div class="row"><div class="col-md-12"><input class="btn btn-primary" style="margin-top:10px;margin-bottom:10px;" type="submit" value="Save" name="Save"/></div></div></form></div></div>';
   else
     $sharesform.='</form></div></div>';
   return $sharesform; 
@@ -90,7 +90,7 @@ if (isset($_REQUEST["addfolder"])) {
 } else if (isset($_REQUEST["shareid"])) {
   $mysql->update("shares",["Searchable"=>($_REQUEST["status"]=="true"?1:0)],"`ID`='".$_REQUEST["shareid"]."'");
 } else if (isset($_REQUEST["adminpassword"])) {
-  savePersistent("password", hash("sha3-512",$_REQUEST["adminpassword"]));  
+  savePersistent("password", hash("sha512",$_REQUEST["adminpassword"]));  
 } else {
   include "head.php";
   show_nav();
@@ -189,7 +189,7 @@ if (isset($_REQUEST["addfolder"])) {
   <div class="row"><div class="col-xs-5">
   <input type="password" class="form-control" name="password">
   </div><div class="col-xs-1">
-  <input class="btn btn-primary" type="submit" value="Save" name="SavePassword"/>
+  <input class="btn btn-primary" style="margin-bottom:10px;" type="submit" value="Save" name="SavePassword"/>
   </div>
   </div></div>';
   

@@ -6,7 +6,7 @@ $max_search=2;
 $result=$mysql->select("shares",["*"]);
 $shares=[];
 foreach($result as $row) {
-  $shares[$row["Path"]]=(int)$row["Searchable"];
+  $shares[$row["Path"]]=["searchable"=>(int)$row["Searchable"],"ID"=>$row["ID"]];
 }
 $file_types=["image","audio","video","pdf","zip","exe","html","text","folder","other"];
 $file_icons=["pix/image.png","pix/mp3.png","pix/video.png","pix/pdf.png","pix/zip.png","pix/exe.png","pix/html.png","pix/text.png","pix/folder.png"];
@@ -140,7 +140,7 @@ function clean_dirpath($path) {
 function check_permission($path) {
   global $shares;
   $allowed=false;
-  foreach ($shares as $share=>$value) {
+  foreach ($shares as $share=>$info) {
     if (startWith($path, $share)) {
       $allowed = true;
     }
@@ -154,7 +154,7 @@ function authenticate() {
     session_start();    
     if (!isset($_SESSION["loggedin"])) {
       if (isset($_SERVER['PHP_AUTH_USER']))
-        if (hash("sha3-512", $_SERVER['PHP_AUTH_PW']) == readPersistent("password"))
+        if (hash("sha512", $_SERVER['PHP_AUTH_PW']) == readPersistent("password"))
           $_SESSION["loggedin"] = time();
     } else {
       if (time() - $_SESSION["loggedin"] > 600) {

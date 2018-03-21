@@ -172,7 +172,7 @@ ob_implicit_flush(true);
 show_nav();
 echo '<div class="row box"><div class="col-xs-12">Please wait for directory scan to complete before results are displayed. <img width="20" height="20" class="progress" src="pix/progress.gif"><BR>(note: bitrates are inaccurate in case of vbr mp3 files)<BR><BR>';
 ob_flush();
-foreach ($shares as $folder=>$value) {
+foreach ($shares as $folder=>$info) {
   break;
 }
 dirscan($folder);
@@ -192,7 +192,7 @@ $(document).ready(function() {
   $(".delete").click(function() {
     target=$(this);
     if (confirm("Are you sure you want to delete this file?")) {      
-        $.ajax({
+      $.ajax({
          url: "'.$base.'/deletefile.php",
          method: "POST",
         data: {file:$(this).attr("target")}

@@ -1,3 +1,6 @@
+.playlists {
+  padding-top:10px;
+}
 .mediadiv {
   margin-bottom:20px;
 }
@@ -55,12 +58,12 @@
   display:none;
 }
 #aplay, #vplay{
-  width:75%;
+  width:100%;
   height: auto;
   margin-top:30px;
 }
 .delete {
-  margin-bottom:0px;
+  margin-bottom:4px;
   margin-right:5px;    
 }
 .b1 {

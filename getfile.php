@@ -10,7 +10,7 @@ class ResumeDownload {
   private $chunk = 2048;
   private $mime;
   private $path;
-
+  
   function __construct($file, $delay = 0) {
     if (!is_file($file)) {
       //logmsg(" HTTP/1.1 400 Invalid Request");
@@ -37,7 +37,8 @@ class ResumeDownload {
     header("Accept-Ranges: bytes");
     header("Content-Type: $this->mime");
     header("Content-Transfer-Encoding: binary");
-    //header(sprintf('Content-Disposition: attachment; filename="%s"', $this->name));
+    if ($this->download)
+      header(sprintf('Content-Disposition: attachment; filename="%s"', $this->name));
     if ($t > 0) {
       //logmsg(" HTTP/1.1 206 Partial content");
       header("HTTP/1.1 206 Partial content");

@@ -86,7 +86,7 @@ if ($allowedruntime==0) {
   echo 'Scanning with a time limit of '.$allowedruntime.' seconds, please wait for results. <img width="20" height="20" class="progress" src="pix/progress.gif"><BR><BR>';
 }
 ob_flush();
-foreach ($shares as $share=>$value) {
+foreach ($shares as $share=>$info) {
   break;
 }
 $result=$mysql->select("shares",["*"]);
