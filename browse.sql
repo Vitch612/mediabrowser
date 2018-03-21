@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Mar 21, 2018 at 03:36 PM
+-- Generation Time: Mar 21, 2018 at 11:20 PM
 -- Server version: 5.7.21
 -- PHP Version: 7.2.2
 
@@ -21,6 +21,8 @@ SET time_zone = "+00:00";
 --
 -- Database: `browse`
 --
+CREATE DATABASE IF NOT EXISTS `browse` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+USE `browse`;
 
 -- --------------------------------------------------------
 
@@ -157,13 +159,13 @@ ALTER TABLE `files`
 -- AUTO_INCREMENT for table `playlist`
 --
 ALTER TABLE `playlist`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
 
 --
 -- AUTO_INCREMENT for table `playlistentries`
 --
 ALTER TABLE `playlistentries`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51068;
 
 --
 -- AUTO_INCREMENT for table `shares`

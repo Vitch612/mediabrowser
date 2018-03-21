@@ -3,7 +3,7 @@ include "include.php";
 
 function search() {
   echo '<div class="row box"><div class="col-xs-12"><div class="row" style="margin-top:10px;"><div class="col-xs-7"><form id="searchform" method="post" action="search.php"><input class="form-control" type="text" id="searchstring" name="searchstring"/></div><div class="col-xs-1 searchbutton"><input class="btn btn-primary" type="submit" id="searchbuttonplaylist" value="Search"/></div><div class="col-xs-1 searchprogress"><img width="20" height="20" class="img-fluid progress" src="pix/progress.gif"></form></div></div>';
-  echo '<div class="row"><div class="col-xs-12" style="margin-left:10px;" id="displaytext"></div></div></div></div>';
+  echo '<div class="row searchresultbuttons" style="margin-top:10px;display:none;margin-bottom:10px;"><div class="col-xs-12"><input class="btn btn-primary" type="button" name="addall" value="Add All" style="margin-right:10px;"><input class="btn btn-primary" type="button" name="clearall" value="Clear"></div></div><div class="row"><div class="col-xs-12" style="margin-left:10px;" id="displaytext"></div></div></div></div>';
 }
 if (isset($_REQUEST["addtoplaylist"])) {
   $target=base64_decode($_REQUEST["target"]);
@@ -68,7 +68,7 @@ if (isset($_REQUEST["addtoplaylist"])) {
   var file;
   function addToPlaylist(playlist) {
     $.ajax({
-      url: "playlists.php",
+      url: "'.$base.'/playlists.php",
       method: "POST",
       data: {addtoplaylist:playlist,target:file}
     }).done(function (data) {
@@ -110,9 +110,36 @@ if (isset($_REQUEST["addtoplaylist"])) {
     });
   }
   $("#btnaddtoplaylist").click(function() {
-    addToPlaylist($("input[name=playlist]:checked").val());    
-  });  
+    if (addall) {
+      var playlist=$("input[name=playlist]:checked").val();
+      var spread=0;
+      $(".singlesearchresult").each(function() {
+          var plentry=$(this).attr("href").substring($(this).attr("href").lastIndexOf("/")+1);
+          setTimeout(function() {
+          $.ajax({
+            url: "'.$base.'/playlists.php",
+            method: "POST",
+            data: {addtoplaylist:playlist,target:plentry}
+          }).done(function (data) {
+            if (data.substr(0,5)=="Error") {
+              alert(data);
+            } else {
+              $("#playlist_"+playlist).html($("#playlist_"+playlist).html()+data);
+            }      
+          });
+        },spread);
+        spread+=100;
+      });
+      addall=false;
+    } else {
+      addToPlaylist($("input[name=playlist]:checked").val());    
+    }    
+  });
+  var addall=false;
   $(document).ready(function() {
+    $(".close").click(function() {
+      addall=false;
+    });
     registerdelete();
     $("#searchbuttonplaylist").click(function (event) {
       $(".progress").show();
@@ -121,7 +148,7 @@ if (isset($_REQUEST["addtoplaylist"])) {
       xhr.abort();
       $("#displaytext").html("");
       searchresults = $.ajax({
-        url: "search.php",
+        url: "'.$base.'/search.php",
         method: "POST",
         data: {searchstring: $("#searchstring").val(),playlist:"1"},
         context: document.body,
@@ -132,8 +159,21 @@ if (isset($_REQUEST["addtoplaylist"])) {
       }).done(function () {
         $(".progress").hide();
         setTimeout(function() {
-          $(".addtoplaylist").click(function() {
+          $(".searchresultbuttons").show();
+          $("input[name=\'addall\']").click(function() {
             if (document.getElementById("playlistslist").childElementCount!=0) {            
+              addall=true;
+              $("#playlistselect").modal("show");
+            } else {
+              alert("Create a playlist first");
+            }
+          });
+          $("input[name=\'clearall\']").click(function() {
+            $("#displaytext").html("");
+            $(".searchresultbuttons").hide();
+          });          
+          $(".addtoplaylist").click(function() {
+            if (document.getElementById("playlistslist").childElementCount!=0) {        
               file=document.getElementById($(this).attr("target"));
               file=file.href.substring(file.href.lastIndexOf("/")+1);
               $("#playlistselect").modal("show");
@@ -147,8 +187,8 @@ if (isset($_REQUEST["addtoplaylist"])) {
     registershowpl();
     $("input[name=\'addplaylist\']").click(function() {
       $.ajax({
-         url: "'.$base.'/playlists.php",
-         method: "POST",
+        url: "'.$base.'/playlists.php",
+        method: "POST",
         data: {addplaylist:$("input[name=\'playlistname\']").val()}
       }).done(function(data) {      
         if (data.substr(0,5)=="Error") {

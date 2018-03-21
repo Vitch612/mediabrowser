@@ -87,21 +87,21 @@ function endWith($haystack,$needle,$case=false) {
 }
 
 function get_file_type($file) {
-  if (endWith($file,".gif",0000) || endWith($file,".png",0000) || endWith($file,".jpg",0000) || endWith($file,".jpeg",0000) || endWith($file,".bmp",0000))
+  if (endWith($file,".gif") || endWith($file,".png") || endWith($file,".jpg") || endWith($file,".jpeg") || endWith($file,".bmp"))
 	  return 0;
-	else if (endWith($file,".mp3",0000) || endWith($file,".wmv",0000) || endWith($file,".wav",0000) || endWith($file,".ogg",0000))
+	else if (endWith($file,".mp2") || endWith($file,".m4a") || endWith($file,".mp3") || endWith($file,".wmv") || endWith($file,".wav") || endWith($file,".ogg"))
 	  return 1;
-	else if (endWith($file,".mkv",0000) || endWith($file,".avi",0000) || endWith($file,".mp4",0000)|| endWith($file,".3gp",0000)|| endWith($file,".mpeg",0000)|| endWith($file,".mpg",0000)|| endWith($file,".wmv",0000))
+	else if (endWith($file,".mkv") || endWith($file,".avi") || endWith($file,".mp4")|| endWith($file,".3gp")|| endWith($file,".mpeg")|| endWith($file,".mpg")|| endWith($file,".wmv"))
 	  return 2;
-	else if (endWith($file,".pdf",0000))
+	else if (endWith($file,".pdf"))
 	  return 3;
-	else if (endWith($file,".zip",0000) || endWith($file,".gz",0000) || endWith($file,".tgz",0000) || endWith($file,".rar",0000) || endWith($file,".tar",0000) || endWith($file,".jar",0000))
+	else if (endWith($file,".zip") || endWith($file,".gz") || endWith($file,".tgz") || endWith($file,".rar") || endWith($file,".tar") || endWith($file,".jar"))
 	  return 4;
-	else if (endWith($file,".exe",0000) || endWith($file,".bat",0000) || endWith($file,".com",0000) || endWith($file,".vbs",0000) || endWith($file,".sh",0000))
+	else if (endWith($file,".exe") || endWith($file,".bat") || endWith($file,".com") || endWith($file,".vbs") || endWith($file,".sh"))
 	  return 5;
-	else if (endWith($file,".htm",0000) || endWith($file,".html",0000))
+	else if (endWith($file,".htm") || endWith($file,".html"))
 	  return 6;
-	else if (endWith($file,".txt",0000) || endWith($file,".inf",0000) || endWith($file,".srt",0000) || endWith($file,".sub",0000) || endWith($file,".ini",0000))
+	else if (endWith($file,".txt") || endWith($file,".inf") || endWith($file,".srt") || endWith($file,".sub") || endWith($file,".ini",0000))
 	  return 7;
   else if (is_dir($file))
     return 8;  

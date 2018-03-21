@@ -183,6 +183,13 @@ if (!function_exists('mime_content_type')) {
       'mpg' => 'audio/mpeg',
       'wma' => 'audio/x-ms-wma',
       'wmv' => 'audio/x-ms-wmv',
+      'mp2' => 'audio/mpeg',
+      'ogg' => 'audio/ogg',
+      'wav' => 'audio/wav',
+      'mid' => 'audio/midi',
+      'm4a' => 'audio/m4a',
+      'rmj' => 'audio/x-pn-realaudio',
+      'mpc' => 'audio/x-musepack',
 
       // adobe
       'pdf' => 'application/pdf',
