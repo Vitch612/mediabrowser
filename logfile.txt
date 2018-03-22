@@ -30,3 +30,8 @@
 2018-03-22 11:07:43pm: insert in duplicates: Out of range value for column 'Size' at row 1
 2018-03-22 11:07:43pm: insert in duplicates: Out of range value for column 'Size' at row 1
 2018-03-22 11:08:42pm: insert in duplicates: Out of range value for column 'Size' at row 1
+2018-03-23 12:36:02am: Access Denied: 
+2018-03-23 12:36:08am: Access Denied: 
+2018-03-23 12:36:45am: Access Denied: 
+2018-03-23 12:37:49am: Access Denied: 
+2018-03-23 12:39:49am: Access Denied: 

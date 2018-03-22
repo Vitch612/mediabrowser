@@ -40,16 +40,16 @@ if (isset($_REQUEST["entry"])) {
   if (check_permission($path)) {
     if (file_exists($path) && is_file($path)) {
       $filename = utf8_encode(substr($path, strrpos($path, "/") + 1));
-      echo '<div class="row box"><div class="col-xs-12 mediacontainer"><div class="row"><div class="col-xs-12">&#8634;&nbsp;<input style="margin-right:10px;" type="checkbox" name="loop" class="form-check-input">&#10542;&nbsp;<input style="margin-right:10px;" type="checkbox" name="shuffle" class="form-check-input"><a href="#" class="previousentry" style="margin-right:15px;">&#9194; previous</a><span class="entryname"><a href="'.$fullurl.'" class="filelink">'.$filename.'</a></span><a style="margin-left:15px;" class="nextentry" href="#">next &#9193;</a></div></div>';
+      echo '<div class="row box"><div class="col-xs-12 mediacontainer"><div class="row"><div class="col-xs-12">&#8634;&nbsp;<input style="margin-right:10px;" type="checkbox" name="loop" class="form-check-input">&#8605;&nbsp;<input style="margin-right:10px;" type="checkbox" name="shuffle" class="form-check-input"><a href="#" class="previousentry" style="margin-right:15px;margin-left:10px;">&#9194;</a><a class="nextentry" href="#">&#9193;</a><BR><span class="entryname"><a href="'.$fullurl.'" class="filelink">'.$filename.'</a></span></div></div>';
       $type;
       switch ($file_types[get_file_type($path)]) {
         case "video":
           $type="video";
-          echo "<div class=\"row\"><div class=\"col-xs-12 mediadiv\"><video style=\"margin-top:10px;\" id=\"avplay\" controls><source src=\"$fullurl\" type=\"video/mp4\">Your browser does not support the video tag.</video></div></div>";
+          echo "<div class=\"row\"><div class=\"col-xs-12 mediadiv\"><video style=\"margin-top:10px;height:auto;\" id=\"avplay\" controls><source src=\"$fullurl\" type=\"video/mp4\">Your browser does not support the video tag.</video></div></div>";
           break;
         case "audio":
           $type="audio";
-          echo "<div class=\"row\"><div class=\"col-xs-12 mediadiv\"><audio style=\"margin-top:40px;\" id=\"avplay\" controls><source src=\"$fullurl\" type=\"audio/mpeg\">Your browser does not support the audio element.</audio></div></div>";
+          echo "<div class=\"row\"><div class=\"col-xs-12 mediadiv\"><audio style=\"margin-top:10px;\" id=\"avplay\" controls><source src=\"$fullurl\" type=\"audio/mpeg\">Your browser does not support the audio element.</audio></div></div>";
           break;
         case "image":
           $type="image";

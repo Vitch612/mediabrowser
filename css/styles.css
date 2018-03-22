@@ -5,7 +5,7 @@
   padding-top:10px;
 }
 .mediadiv {
-  margin-bottom:20px;
+  margin-bottom:10px;
 }
 .searchprogress {
   max-width:20px;
@@ -61,8 +61,7 @@
   display:none;
 }
 #avplay {
-  width:100%;
-  height: auto;
+  width:100%;  
 }
 .delete {
   margin-bottom:4px;
@@ -158,6 +157,9 @@
   color:black;
 }
 .filelink {
+  text-decoration:none;
+}
+a.previousentry:link,a.previousentry:visited,a.previousentry:hover,a.previousentry:active,a.nextentry:link,a.nextentry:visited,a.nextentry:hover,a.nextentry:active {
   text-decoration:none;
 }
 
