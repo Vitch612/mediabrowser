@@ -229,11 +229,12 @@ if (!function_exists('mime_content_type')) {
 //}
 
 //register_shutdown_function("script_end");
-//logmsg("Request Headers");
-//foreach (getallheaders() as $name => $value) {
-//    logmsg(" $name: $value");
-//}
-//logmsg("");
+/*
+logmsg("Request Headers");
+foreach (getallheaders() as $name => $value) {
+    logmsg(" $name: $value");
+}
+*/
 //logmsg("Response Headers");
 $str=$_SERVER["REQUEST_URI"];
 $path = base64_decode(substr($str, strrpos($str, "/") + 1, strrpos($str, ".") - strlen($str)));

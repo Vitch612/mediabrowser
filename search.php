@@ -22,9 +22,9 @@ function dirsearch($dirpath, $searchstring,$playlist=false) {
             if (strpos(strtolower($file), strtolower($searchstring)) !== false) {
               $count++;
               if ($playlist)
-                echo '<img target="'.$count.'" src="pix/add.png" width="15" height="15" style="margin-right:10px;margin-bottom:4px;" class="addtoplaylist"/><a id="'.$count.'" title="'.$entry.'" target="_blank" class="singlesearchresult" href="show/'.base64_encode($entry).'">'.basename($entry).'</a><BR>';
+                echo '<img target="'.$count.'" src="pix/add.png" width="15" height="15" style="margin-right:10px;margin-bottom:4px;" class="addtoplaylist"/><a id="'.$count.'" title="'.utf8_encode($entry).'" target="_blank" class="singlesearchresult" href="show/'.base64_encode($entry).'">'.utf8_encode(basename($entry)).'</a><BR>';
               else
-                echo "<a  title=\"$entry\" target=\"_blank\" href=\"show/".base64_encode($entry)."\">".basename($entry)."</a><BR>"; 
+                echo "<a  title=\"".utf8_encode($entry)."\" target=\"_blank\" href=\"show/".base64_encode($entry)."\">".utf8_encode(basename($entry))."</a><BR>"; 
             } 
         }
     }

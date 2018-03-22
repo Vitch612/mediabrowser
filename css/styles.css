@@ -1,3 +1,6 @@
+.delete {
+  cursor: pointer;
+}
 .playlists {
   padding-top:10px;
 }
@@ -157,8 +160,13 @@
 }
 .filelink {
   text-decoration:none;
-  color: #31708f;
 }
+
+a.filelink:link,a.filelink:visited,a.filelink:hover,a.filelink:active  {
+  color: darkorchid;
+  text-decoration:none;
+}
+
 .bodydiv {
   word-wrap:break-word;
   font-size:16px;

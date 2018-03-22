@@ -145,6 +145,8 @@ function check_permission($path) {
       $allowed = true;
     }
   }
+  if (!$allowed) 
+    logmsg("Access Denied: ".$path);
   return $allowed;
 }
 

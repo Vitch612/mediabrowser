@@ -2,7 +2,7 @@
 include "include.php";
 
 function search() {
-  echo '<div class="row box"><div class="col-xs-12"><div class="row" style="margin-top:10px;"><div class="col-xs-7"><form id="searchform" method="post" action="search.php"><input class="form-control" type="text" id="searchstring" name="searchstring"/></div><div class="col-xs-1 searchbutton"><input class="btn btn-primary" type="submit" id="searchbuttonplaylist" value="Search"/></div><div class="col-xs-1 searchprogress"><img width="20" height="20" class="img-fluid progress" src="pix/progress.gif"></form></div></div>';
+  echo '<div class="row box"><div class="col-xs-12"><div class="row" style="margin-top:10px;"><div class="col-xs-7"><form id="searchform" method="post" action="search.php"><input class="form-control" type="text" id="searchstring" name="searchstring"/></div><div class="col-xs-1 searchbutton"><input class="btn btn-primary" type="button" id="searchbuttonplaylist" value="Search"/></div><div class="col-xs-1 searchprogress"><img width="20" height="20" class="img-fluid progress" src="pix/progress.gif"></form></div></div>';
   echo '<div class="row searchresultbuttons" style="margin-top:10px;display:none;margin-bottom:10px;"><div class="col-xs-12"><input class="btn btn-primary" type="button" name="addall" value="Add All" style="margin-right:10px;"><input class="btn btn-primary" type="button" name="clearall" value="Clear"></div></div><div class="row"><div class="col-xs-12" style="margin-left:10px;" id="displaytext"></div></div></div></div>';
 }
 if (isset($_REQUEST["addtoplaylist"])) {
@@ -11,8 +11,8 @@ if (isset($_REQUEST["addtoplaylist"])) {
     if (startWith($target, $share)) {
       $result=$mysql->select("files",["ID","Filename"],"`Path`='".$mysql->conn->real_escape_string(substr($target,strlen($share)+1))."' AND `Share`='".$info["ID"]."'");
       if (count($result)!=0) {
-        if ($mysql->insert("playlistentries",["Playlist"=>$_REQUEST["addtoplaylist"],"File"=>$result[0]["ID"],"Weight"=>0])) {          
-          echo $mysql->insert_id." ".$result[0]["Filename"]."<BR>";
+        if ($mysql->insert("playlistentries",["Playlist"=>$_REQUEST["addtoplaylist"],"File"=>$result[0]["ID"],"Weight"=>0])) {
+          echo $mysql->insert_id." ".utf8_encode($result[0]["Filename"])."<BR>";
         } else
           echo "Error: ".$mysql->error;
       } else
@@ -27,7 +27,7 @@ if (isset($_REQUEST["addtoplaylist"])) {
   }
 } else if (isset($_REQUEST["addplaylist"])) {
   if ($mysql->insert("playlist",["Name"=>$_REQUEST["addplaylist"]])) {
-    echo '<span><img class="delete" target="' . $mysql->insert_id  . '" src="pix/delete.png"/><a href="#'.$mysql->insert_id .'" class="showplaylist">' . $_REQUEST["addplaylist"] . "</a><BR></span>";
+    echo '<span><img class="delete" target="' . $mysql->insert_id  . '" src="pix/delete.png"/><a href="#'.$mysql->insert_id .'" class="showplaylist">' . $_REQUEST["addplaylist"] . '</a><form action="'.$base.'/showplaylist.php" method="POST" style="display:inline;margin-left:5px;position:relative;top:7px;"><input type="image" name="playlist" value="'.$mysql->insert_id .'" alt="Submit Form" style="width:25px;height:25px;" src="'.$base.'/pix/play.png"/></form><BR></span>';
     echo '<div style="display:none;" id="playlist_'.$mysql->insert_id.'">';    
   } else {
     echo "Error: ".$mysql->error;
@@ -236,12 +236,12 @@ if (isset($_REQUEST["addtoplaylist"])) {
   echo '<input class="btn btn-primary" type="button" value="Add" name="addplaylist">';
   echo '</div></div><div class="row"><div class="playlists col-xs-12">';
   foreach ($result as $row) {
-    echo '<span><img class="delete" target="' . $row["ID"] . '" src="pix/delete.png"/><a href="#'.$row["ID"].'" class="showplaylist">' . $row["Name"] . "</a><BR></span>";
+    echo '<span><img class="delete" target="' . $row["ID"] . '" src="pix/delete.png"/><a href="#'.$row["ID"].'" class="showplaylist">' . $row["Name"] . '</a><form action="'.$base.'/showplaylist.php" method="POST" style="display:inline;margin-left:5px;position:relative;top:7px;"><input type="image" name="playlist" value="'.$row["ID"].'" alt="Submit Form" style="width:25px;height:25px;" src="'.$base.'/pix/play.png"/></form><BR></span>';
     echo '<div style="display:none;" id="playlist_'.$row["ID"].'">';
     $plresult = $mysql->select("playlistentries", ["*"],"`Playlist`='".$row["ID"]."'");  
     foreach($plresult as $plrow) {
         $plentry=$mysql->select("files",["*"],"`ID`='".$plrow["File"]."'");
-        echo $plrow["ID"]." ".$plentry[0]["Filename"]."<BR>";
+        echo $plrow["ID"]." ".utf8_encode($plentry[0]["Filename"])."<BR>";
     }
     echo '</div>';
   }
