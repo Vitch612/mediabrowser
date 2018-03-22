@@ -60,10 +60,9 @@
 .mycollapsed {
   display:none;
 }
-#aplay, #vplay{
+#avplay {
   width:100%;
   height: auto;
-  margin-top:30px;
 }
 .delete {
   margin-bottom:4px;

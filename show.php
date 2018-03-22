@@ -10,15 +10,13 @@ $fullurl=$_SERVER["REQUEST_SCHEME"] . "://" . $_SERVER["HTTP_HOST"].$base."/file
 if (check_permission($path)) {
   if (file_exists($path) && is_file($path)) {
     $filename = utf8_encode(substr($path, strrpos($path, "/") + 1));
-    echo "<div class=\"row box\"><div class=\"col-xs-12 mediacontainer\"><div class=\"row\"><div class=\"col-xs-12\" style=\"margin-bottom:20px;\">Direct Link <a href=\"$fullurl\" class=\"filelink\">$filename</a></div></div>";
+    echo "<div class=\"row box\"><div class=\"col-xs-12 mediacontainer\"><div class=\"row\"><div class=\"col-xs-12\">Direct Link <a href=\"$fullurl\" class=\"filelink\">$filename</a></div></div>";
     switch ($file_types[get_file_type($path)]) {
       case "video":
-        echo "<div class=\"row\"><div class=\"col-xs-12 mediadiv\"><video id=\"vplay\" controls><source src=\"$fullurl\" type=\"video/mp4\">Your browser does not support the video tag.</video></div></div>";
-        echo '<script type="text/javascript" src="' . $base . '/js/video.js"></script> ';
+        echo "<div class=\"row\"><div class=\"col-xs-12 mediadiv\"><video style=\"margin-top:10px;\" id=\"avplay\" controls><source src=\"$fullurl\" type=\"video/mp4\">Your browser does not support the video tag.</video></div></div>";
         break;
       case "audio":
-        echo "<div class=\"row\"><div class=\"col-xs-12 mediadiv\"><audio id=\"aplay\" controls><source src=\"$fullurl\" type=\"audio/mpeg\">Your browser does not support the audio element.</audio></div></div>";
-        echo '<script type="text/javascript" src="' . $base . '/js/audio.js"></script> ';
+        echo "<div class=\"row\"><div class=\"col-xs-12 mediadiv\"><audio style=\"margin-top:40px;\" id=\"avplay\" controls><source src=\"$fullurl\" type=\"audio/mpeg\">Your browser does not support the audio element.</audio></div></div>";
         break;
       case "image":
         echo "<div class=\"row\"><div class=\"col-xs-12 mediadiv\"><img class=\"img-responsive\" src=\"$fullurl\"/></div></div>";

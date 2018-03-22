@@ -3,13 +3,14 @@ include "include.php";
 
 function search() {
   echo '<div class="row box"><div class="col-xs-12"><div class="row" style="margin-top:10px;"><div class="col-xs-7"><form id="searchform" method="post" action="search.php"><input class="form-control" type="text" id="searchstring" name="searchstring"/></div><div class="col-xs-1 searchbutton"><input class="btn btn-primary" type="button" id="searchbuttonplaylist" value="Search"/></div><div class="col-xs-1 searchprogress"><img width="20" height="20" class="img-fluid progress" src="pix/progress.gif"></form></div></div>';
-  echo '<div class="row searchresultbuttons" style="margin-top:10px;display:none;margin-bottom:10px;"><div class="col-xs-12"><input class="btn btn-primary" type="button" name="addall" value="Add All" style="margin-right:10px;"><input class="btn btn-primary" type="button" name="clearall" value="Clear"></div></div><div class="row"><div class="col-xs-12" style="margin-left:10px;" id="displaytext"></div></div></div></div>';
+  echo '<div class="row searchresultbuttons" style="margin-top:10px;display:none;margin-bottom:10px;"><div class="col-xs-12"><input class="btn btn-primary" type="button" name="addall" value="Add All" style="margin-right:10px;"><img width="20" height="20" style="display:none;margin-left:-5px;margin-right:5px;" class="img-fluid addallprogress" src="pix/progress.gif"><input class="btn btn-primary" type="button" name="clearall" value="Clear"></div></div><div class="row"><div class="col-xs-12" style="margin-left:10px;" id="displaytext"></div></div></div></div>';
 }
+
 if (isset($_REQUEST["addtoplaylist"])) {
   $target=base64_decode($_REQUEST["target"]);
   foreach($shares as $share=>$info) {
     if (startWith($target, $share)) {
-      $result=$mysql->select("files",["ID","Filename"],"`Path`='".$mysql->conn->real_escape_string(substr($target,strlen($share)+1))."' AND `Share`='".$info["ID"]."'");
+      $result=$mysql->select("files",["ID","Filename"],"`Path`='".$mysql->conn->real_escape_string(substr($target,strlen($share)))."' AND `Share`='".$info["ID"]."'");
       if (count($result)!=0) {
         if ($mysql->insert("playlistentries",["Playlist"=>$_REQUEST["addtoplaylist"],"File"=>$result[0]["ID"],"Weight"=>0])) {
           echo $mysql->insert_id." ".utf8_encode($result[0]["Filename"])."<BR>";
@@ -113,7 +114,10 @@ if (isset($_REQUEST["addtoplaylist"])) {
     if (addall) {
       var playlist=$("input[name=playlist]:checked").val();
       var spread=0;
-      $(".singlesearchresult").each(function() {
+      var lastone=$(".singlesearchresult").length;
+      var count=0;
+      $(".addallprogress").show();
+      $(".singlesearchresult").each(function() {          
           var plentry=$(this).attr("href").substring($(this).attr("href").lastIndexOf("/")+1);
           setTimeout(function() {
           $.ajax({
@@ -121,11 +125,15 @@ if (isset($_REQUEST["addtoplaylist"])) {
             method: "POST",
             data: {addtoplaylist:playlist,target:plentry}
           }).done(function (data) {
+            count++;
             if (data.substr(0,5)=="Error") {
               alert(data);
             } else {
               $("#playlist_"+playlist).html($("#playlist_"+playlist).html()+data);
-            }      
+            }
+            if (count==lastone) {
+              $(".addallprogress").hide();
+            }
           });
         },spread);
         spread+=100;

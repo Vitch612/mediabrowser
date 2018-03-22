@@ -7,7 +7,7 @@ $active = true;
 $starttime = time();
 $allowedruntime = 0;
 $shareid=0;
-//$chunksize = 2048;
+$chunksize = 2048;
 
 function dirscan($dirpath, $startpoint = "") {
   global $share;
@@ -17,7 +17,7 @@ function dirscan($dirpath, $startpoint = "") {
   global $allowedruntime;
   global $mysql;
   global $shareid;
-  //global $chunksize;  
+  global $chunksize;  
   $fullpath = $dirpath;
   $dir_handle = @opendir($dirpath) or die;
   while (($file = readdir($dir_handle)) && !$abort) {
@@ -41,14 +41,14 @@ function dirscan($dirpath, $startpoint = "") {
           $search = $mysql->select("files", ["ID"], "`Path`='".$mysql->conn->real_escape_string(substr($fullpath,strpos($fullpath,$share)+strlen($share)))."'");
           if (count($search) == 0) {
             $fh = fopen($fullpath, "r");
-//          if (filesize($fullpath) > 2 * $chunksize) {            
-//            $buffbegin = fread($fh, $chunksize);
-//            fseek($fh, filesize($fullpath) - $chunksize);
-//            $buffend = fread($fh, $chunksize);
-//            $md5 = md5($buffbegin . $buffend);
-//          } else {
+          if (filesize($fullpath) > 2 * $chunksize) {            
+            $buffbegin = fread($fh, $chunksize);
+            fseek($fh, filesize($fullpath) - $chunksize);
+            $buffend = fread($fh, $chunksize);
+            $md5 = md5($buffbegin . $buffend);
+          } else {
             $md5 = md5(fread($fh, filesize($fullpath)));
-//          }
+          }
             fclose($fh);
             if (!$mysql->insert("files", ["Share"=>$shareid, "Path" => substr($fullpath,strpos($fullpath,$share)+strlen($share)), "Filename" => $file, "MD5" => $md5, "Size" => filesize($fullpath), "Modtime" => filemtime($fullpath)])) {
               if (strpos($mysql->error, "Duplicate entry") >= 0) {
@@ -87,20 +87,17 @@ if ($allowedruntime==0) {
 }
 ob_flush();
 foreach ($shares as $share=>$info) {
-  break;
-}
-$result=$mysql->select("shares",["*"]);
-foreach($result as $row) {
-  if ($row["Path"]==$share) {
-    $shareid=(int)$row["ID"];
+  if ($info["searchable"]==true) {
+    $shareid=$info["ID"];
+    dirscan(substr($share,0,strlen($share)-1));
   }
 }
-dirscan($share);
 
 $dups=$mysql->select("duplicates",["*"]);
 if (count($dups)==0) {
-  echo "No duplicates";
+  echo "Scan complete. No duplicates found";
 } else {
+  echo "Scan complete. The following files might be duplicates.";
   foreach($dups as $row) {
     echo $share.$row["Path"]."<BR>";
     $file=$mysql->select("files",["*"],"`MD5`='".$row["MD5"]."' AND `Size`='".$row["Size"]."'");

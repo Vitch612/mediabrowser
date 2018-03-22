@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Mar 21, 2018 at 11:20 PM
+-- Generation Time: Mar 23, 2018 at 12:11 AM
 -- Server version: 5.7.21
 -- PHP Version: 7.2.2
 
@@ -21,8 +21,6 @@ SET time_zone = "+00:00";
 --
 -- Database: `browse`
 --
-CREATE DATABASE IF NOT EXISTS `browse` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
-USE `browse`;
 
 -- --------------------------------------------------------
 
@@ -147,31 +145,31 @@ ALTER TABLE `shares`
 -- AUTO_INCREMENT for table `duplicates`
 --
 ALTER TABLE `duplicates`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `files`
 --
 ALTER TABLE `files`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=91837;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=95203;
 
 --
 -- AUTO_INCREMENT for table `playlist`
 --
 ALTER TABLE `playlist`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=74;
 
 --
 -- AUTO_INCREMENT for table `playlistentries`
 --
 ALTER TABLE `playlistentries`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51068;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52635;
 
 --
 -- AUTO_INCREMENT for table `shares`
 --
 ALTER TABLE `shares`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- Constraints for dumped tables

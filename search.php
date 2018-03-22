@@ -53,11 +53,11 @@ ob_implicit_flush(1);
 if (isset($_REQUEST["searchstring"]) && $_REQUEST["searchstring"]!="" && isset($_REQUEST["playlist"])) {
   foreach ($shares as $share=>$info) {
     if ($info["searchable"]==1)
-      dirsearch($share,$_REQUEST["searchstring"],true);
+      dirsearch(substr($share,0,strlen($share)-1),$_REQUEST["searchstring"],true);
   }
 } else if (isset($_REQUEST["searchstring"]) && $_REQUEST["searchstring"]!="") {
   foreach ($shares as $share=>$info) {
     if ($info["searchable"]==1)
-      dirsearch($share,$_REQUEST["searchstring"]);
+      dirsearch(substr($share,0,strlen($share)-1),$_REQUEST["searchstring"]);
   }
 }

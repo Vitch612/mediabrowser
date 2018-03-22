@@ -37,9 +37,32 @@ if (isset($_REQUEST["entry"])) {
       }
     }
   }
-
-  echo '<script>
-var aud;
+  if (check_permission($path)) {
+    if (file_exists($path) && is_file($path)) {
+      $filename = utf8_encode(substr($path, strrpos($path, "/") + 1));
+      echo '<div class="row box"><div class="col-xs-12 mediacontainer"><div class="row"><div class="col-xs-12">&#8634;&nbsp;<input style="margin-right:10px;" type="checkbox" name="loop" class="form-check-input">&#10542;&nbsp;<input style="margin-right:10px;" type="checkbox" name="shuffle" class="form-check-input"><a href="#" class="previousentry" style="margin-right:15px;">&#9194; previous</a><span class="entryname"><a href="'.$fullurl.'" class="filelink">'.$filename.'</a></span><a style="margin-left:15px;" class="nextentry" href="#">next &#9193;</a></div></div>';
+      $type;
+      switch ($file_types[get_file_type($path)]) {
+        case "video":
+          $type="video";
+          echo "<div class=\"row\"><div class=\"col-xs-12 mediadiv\"><video style=\"margin-top:10px;\" id=\"avplay\" controls><source src=\"$fullurl\" type=\"video/mp4\">Your browser does not support the video tag.</video></div></div>";
+          break;
+        case "audio":
+          $type="audio";
+          echo "<div class=\"row\"><div class=\"col-xs-12 mediadiv\"><audio style=\"margin-top:40px;\" id=\"avplay\" controls><source src=\"$fullurl\" type=\"audio/mpeg\">Your browser does not support the audio element.</audio></div></div>";
+          break;
+        case "image":
+          $type="image";
+          echo "<div class=\"row\"><div class=\"col-xs-12 mediadiv\"><img  style=\"margin-top:10px;max-height:75vh;\" id=\"viewimage\" class=\"img-responsive\" src=\"$fullurl\"/></div></div>";
+          break;
+        default:
+          $type="other";
+          echo "<div class=\"row\"><div class=\"col-xs-12 mediadiv\">Unhandled media type. Download to device by clicking above link.</div></div>";
+      }
+      echo "</div></div>";
+echo '<script>
+var mediatype="'.$type.'";
+var player;
 var canplay=false;
 var pl_length='.$numentries.';
 var currententry=0;
@@ -47,7 +70,7 @@ var previousentry=0;
 var currentplaylist='.$playlistid.';
   
 function pointtorand() {
-  currententry=Math.floor((Math.random() * (pl_length-1)));  
+  currententry=Math.round((Math.random() * (pl_length-1)));
 }
 
 function pointtonext() {
@@ -58,11 +81,11 @@ function pointtonext() {
     pointtorand();
     return true;
   }
-  if (currententry<pl_length-2) {  
+  if (currententry<pl_length-1) {  
     currententry++;
     return true;
   }
-  if (currententry>=pl_length-2 && loop) {
+  if (currententry>=pl_length-1 && loop) {
     currententry=0;
     return true;
   }
@@ -79,15 +102,20 @@ function pointtoprev() {
     return true;
   }
   previousentry=currententry;
-  if (currententry>1) {
+  if (currententry>0) {
     currententry--;
     return true;
   }
-  if (currententry<=1 && loop) {
+  if (currententry<=0 && loop) {
     currententry=pl_length-1;
     return true;
   }
   return false;
+}
+
+function imageanim() {
+  getnext();
+  setTimeout(imageanim,2000);
 }
 
 function getnext(d) {
@@ -104,54 +132,41 @@ function getnext(d) {
       data: {playlist:currentplaylist,entry:currententry}
     }).done(function (data) {
       var ret=data.split(",");    
-      aud.src=ret[0];
+      if (mediatype=="audio" || mediatype=="video")
+        player.src=ret[0];
+      else if (mediatype=="image") {
+        $("#viewimage")[0].src=ret[0];
+      }
       $(".entryname").html(atob(ret[1]));
     });
   }
 };
 
 $(document).ready(function() {
+  if (mediatype=="image") {
+    setTimeout(imageanim,2000);
+  }
   $(".previousentry").click(function() {
     getnext(true);
   });
   $(".nextentry").click(function() {
     getnext();
   });
-  aud = $("#aplay")[0];    
-  aud.oncanplay = function() {
-    aud.play();
+  player = $("#avplay")[0];    
+  player.oncanplay = function() {
+    player.play();
   };
-  aud.onerror = function() {
+  player.onerror = function() {
     getnext();
   };
-  aud.onstalled = function() {
-    alert("stalled");
+  player.onstalled = function() {
+    getnext();
   };
-  aud.onended  = function() {
+  player.onended  = function() {
     getnext();
   };
 });
 </script>';
-
-  if (check_permission($path)) {
-    if (file_exists($path) && is_file($path)) {
-      $filename = utf8_encode(substr($path, strrpos($path, "/") + 1));
-      echo '<div class="row box"><div class="col-xs-12 mediacontainer"><div class="row" style="margin-bottom:20px;"><div class="col-xs-12">&#8634;&nbsp;<input style="margin-right:10px;" type="checkbox" name="loop" class="form-check-input">&#10542;&nbsp;<input style="margin-right:10px;" type="checkbox" name="shuffle" class="form-check-input"><a href="#" class="previousentry" style="margin-right:15px;">&#9194; previous</a><span class="entryname"><a href="'.$fullurl.'" class="filelink">'.$filename.'</a></span><a style="margin-left:15px;" class="nextentry" href="#">next &#9193;</a></div></div>';
-      switch ($file_types[get_file_type($path)]) {
-        case "video":
-          echo "<div class=\"row\"><div class=\"col-xs-12 mediadiv\"><video id=\"vplay\" controls><source src=\"$fullurl\" type=\"video/mp4\">Your browser does not support the video tag.</video></div></div>";
-          echo '<script type="text/javascript" src="' . $base . '/js/video.js"></script> ';
-          break;
-        case "audio":
-          echo "<div class=\"row\"><div class=\"col-xs-12 mediadiv\"><audio id=\"aplay\" controls><source src=\"$fullurl\" type=\"audio/mpeg\">Your browser does not support the audio element.</audio></div></div>";
-          break;
-        case "image":
-          echo "<div class=\"row\"><div class=\"col-xs-12 mediadiv\"><img class=\"img-responsive\" src=\"$fullurl\"/></div></div>";
-          break;
-        default:
-          echo "<div class=\"row\"><div class=\"col-xs-12 mediadiv\">Unhandled media type. Download to device by clicking above link.</div></div>";
-      }
-      echo "</div></div>";
     } else {
       header("HTTP/1.1 404 Invalid Request");
       die("<h3>File Not Found</h3>");
