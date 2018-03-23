@@ -1,15 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 4.7.8
+-- version 4.6.3
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Mar 23, 2018 at 10:06 AM
--- Server version: 5.7.21
--- PHP Version: 7.2.2
+-- Generation Time: Mar 23, 2018 at 10:32 AM
+-- Server version: 5.5.21-log
+-- PHP Version: 5.6.24
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
-START TRANSACTION;
 SET time_zone = "+00:00";
 
 
@@ -32,7 +30,7 @@ DROP TABLE IF EXISTS `duplicates`;
 CREATE TABLE `duplicates` (
   `ID` int(11) NOT NULL,
   `Share` int(11) NOT NULL,
-  `Path` varchar(4096) NOT NULL,
+  `Path` varchar(2048) NOT NULL,
   `Filename` varchar(255) NOT NULL,
   `MD5` char(32) NOT NULL,
   `Size` int(11) NOT NULL,
@@ -49,7 +47,7 @@ DROP TABLE IF EXISTS `files`;
 CREATE TABLE `files` (
   `ID` int(11) NOT NULL,
   `Share` int(11) NOT NULL,
-  `Path` varchar(767) NOT NULL,
+  `Path` varchar(2048) NOT NULL,
   `Filename` varchar(255) NOT NULL,
   `MD5` char(32) NOT NULL,
   `Size` int(11) NOT NULL,
@@ -112,7 +110,6 @@ ALTER TABLE `duplicates`
 ALTER TABLE `files`
   ADD PRIMARY KEY (`ID`),
   ADD UNIQUE KEY `unique_index` (`MD5`,`Size`),
-  ADD UNIQUE KEY `Path` (`Path`),
   ADD KEY `ID` (`ID`),
   ADD KEY `Share` (`Share`);
 
@@ -135,8 +132,7 @@ ALTER TABLE `playlistentries`
 -- Indexes for table `shares`
 --
 ALTER TABLE `shares`
-  ADD PRIMARY KEY (`ID`),
-  ADD UNIQUE KEY `Path` (`Path`);
+  ADD PRIMARY KEY (`ID`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -147,31 +143,26 @@ ALTER TABLE `shares`
 --
 ALTER TABLE `duplicates`
   MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
-
 --
 -- AUTO_INCREMENT for table `files`
 --
 ALTER TABLE `files`
   MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=95203;
-
 --
 -- AUTO_INCREMENT for table `playlist`
 --
 ALTER TABLE `playlist`
   MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=73;
-
 --
 -- AUTO_INCREMENT for table `playlistentries`
 --
 ALTER TABLE `playlistentries`
   MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52633;
-
 --
 -- AUTO_INCREMENT for table `shares`
 --
 ALTER TABLE `shares`
   MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
-
 --
 -- Constraints for dumped tables
 --
@@ -188,7 +179,6 @@ ALTER TABLE `files`
 ALTER TABLE `playlistentries`
   ADD CONSTRAINT `playlistentries_ibfk_1` FOREIGN KEY (`Playlist`) REFERENCES `playlist` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `playlistentries_ibfk_2` FOREIGN KEY (`File`) REFERENCES `files` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
-COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
