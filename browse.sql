@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Mar 23, 2018 at 12:11 AM
+-- Generation Time: Mar 23, 2018 at 10:06 AM
 -- Server version: 5.7.21
 -- PHP Version: 7.2.2
 
@@ -49,7 +49,7 @@ DROP TABLE IF EXISTS `files`;
 CREATE TABLE `files` (
   `ID` int(11) NOT NULL,
   `Share` int(11) NOT NULL,
-  `Path` varchar(4096) NOT NULL,
+  `Path` varchar(767) NOT NULL,
   `Filename` varchar(255) NOT NULL,
   `MD5` char(32) NOT NULL,
   `Size` int(11) NOT NULL,
@@ -91,7 +91,7 @@ CREATE TABLE `playlistentries` (
 DROP TABLE IF EXISTS `shares`;
 CREATE TABLE `shares` (
   `ID` int(11) NOT NULL,
-  `Path` varchar(1024) NOT NULL,
+  `Path` varchar(767) NOT NULL,
   `Searchable` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -112,6 +112,7 @@ ALTER TABLE `duplicates`
 ALTER TABLE `files`
   ADD PRIMARY KEY (`ID`),
   ADD UNIQUE KEY `unique_index` (`MD5`,`Size`),
+  ADD UNIQUE KEY `Path` (`Path`),
   ADD KEY `ID` (`ID`),
   ADD KEY `Share` (`Share`);
 
@@ -145,7 +146,7 @@ ALTER TABLE `shares`
 -- AUTO_INCREMENT for table `duplicates`
 --
 ALTER TABLE `duplicates`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `files`
@@ -157,13 +158,13 @@ ALTER TABLE `files`
 -- AUTO_INCREMENT for table `playlist`
 --
 ALTER TABLE `playlist`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=74;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=73;
 
 --
 -- AUTO_INCREMENT for table `playlistentries`
 --
 ALTER TABLE `playlistentries`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52635;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52633;
 
 --
 -- AUTO_INCREMENT for table `shares`

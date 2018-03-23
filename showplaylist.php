@@ -194,7 +194,6 @@ function togglefullscreen() {
     $("#viewimage").css("transform","translate(-50%, -50%)");
   }
   fullscreen=!fullscreen;
-
 }
 
 $(document).ready(function() {
