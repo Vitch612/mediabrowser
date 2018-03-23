@@ -53,7 +53,7 @@ if (isset($_REQUEST["entry"])) {
           break;
         case "image":
           $type="image";
-          echo "<div class=\"row\"><div class=\"col-xs-12 mediadiv\"><img  style=\"margin-top:10px;max-height:75vh;\" id=\"viewimage\" class=\"img-responsive\" src=\"$fullurl\"/></div></div>";
+          echo "<div class=\"row\"><div class=\"col-xs-12 mediadiv\"><div id=\"background\" style=\"display:none;\"></div><img  style=\"margin-top:10px;max-height:73vh;\" id=\"viewimage\" class=\"img-responsive\" src=\"$fullurl\"/></div></div>";
           break;
         default:
           $type="other";
@@ -114,7 +114,8 @@ function pointtoprev() {
 }
 
 function imageanim() {
-  getnext();
+  if (!pause)    
+    getnext();
   setTimeout(imageanim,2000);
 }
 
@@ -141,10 +142,82 @@ function getnext(d) {
     });
   }
 };
+var fullscreen=false;
+var pause=false;
+function togglefullscreen() {
+  if (fullscreen) {        
+    $("#background").css("display","none");
+    $("#background").css("position","");
+    $("#background").css("top","");
+    $("#background").css("left","");
+    $("#background").css("margin-top","");
+    $("#background").css("width","");
+    $("#background").css("height","");
+    $("#background").css("min-width","");
+    $("#background").css("min-height","");
+    $("#background").css("z-index","");
+    $("#background").css("background-color","");
+    $("#viewimage").css("position","");
+    $("#viewimage").css("top","");
+    $("#viewimage").css("left","");
+    $("#viewimage").css("margin-top","10px");
+    $("#viewimage").css("margin-left",";");
+    $("#viewimage").css("margin-right",";");
+    $("#viewimage").css("min-height","");
+    $("#viewimage").css("max-width","");
+    $("#viewimage").css("max-height","73vh");
+    $("#viewimage").css("z-index","");
+    $("#viewimage").css("transform","");
+  } else {          
+    $("#background").css("display","block");
+    $("#background").css("position","fixed");
+    $("#background").css("top","0");
+    $("#background").css("left","0");
+    $("#background").css("margin-top","0");
+    $("#background").css("width","100vh");
+    $("#background").css("height","100vh");
+    $("#background").css("min-width","100vw");
+    $("#background").css("min-height","100vh");
+    $("#background").css("z-index","10");
+    $("#background").css("background-color","white");
+    $("#viewimage").css("position","fixed");
+    $("#viewimage").css("top","50%");
+    $("#viewimage").css("left","50%");
+    $("#viewimage").css("margin-top","0");
+    $("#viewimage").css("margin-left","auto;");
+    $("#viewimage").css("margin-right","auto;");
+    $("#viewimage").css("min-height","100vh");
+    $("#viewimage").css("max-height","100vh");
+    $("#viewimage").css("max-width","100vw");
+    $("#viewimage").css("z-index","20");   
+    $("#viewimage").css("transform","translate(-50%, -50%)");
+  }
+  fullscreen=!fullscreen;
+
+}
 
 $(document).ready(function() {
+  
   if (mediatype=="image") {
     setTimeout(imageanim,2000);
+    $(document).keydown(function(e) {
+      if (e.keyCode==27 && fullscreen) {
+        togglefullscreen();
+      }
+      if (e.keyCode==13) {
+        pause=!pause;
+      }
+      if (e.keyCode==37) {
+        getnext(true);
+      }
+      if (e.keyCode==39) {
+        getnext();
+      }
+      return false;
+    });
+    $("#viewimage").click(function() {
+      togglefullscreen();
+    });    
   }
   $(".previousentry").click(function() {
     getnext(true);
@@ -152,19 +225,21 @@ $(document).ready(function() {
   $(".nextentry").click(function() {
     getnext();
   });
-  player = $("#avplay")[0];    
-  player.oncanplay = function() {
-    player.play();
-  };
-  player.onerror = function() {
-    getnext();
-  };
-  player.onstalled = function() {
-    getnext();
-  };
-  player.onended  = function() {
-    getnext();
-  };
+  if (mediatype=="audio" || mediatype=="video") {
+    player = $("#avplay")[0];    
+    player.oncanplay = function() {
+      player.play();
+    };
+    player.onerror = function() {
+      getnext();
+    };
+    player.onstalled = function() {
+      getnext();
+    };
+    player.onended  = function() {
+      getnext();
+    };
+  }
 });
 </script>';
     } else {
