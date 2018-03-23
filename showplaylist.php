@@ -164,6 +164,7 @@ function togglefullscreen() {
     $("#viewimage").css("margin-left",";");
     $("#viewimage").css("margin-right",";");
     $("#viewimage").css("min-height","");
+    $("#viewimage").css("min-width","");
     $("#viewimage").css("max-width","");
     $("#viewimage").css("max-height","73vh");
     $("#viewimage").css("z-index","");
@@ -197,9 +198,21 @@ function togglefullscreen() {
 }
 
 $(document).ready(function() {
-  
   if (mediatype=="image") {
     setTimeout(imageanim,2000);
+    $("#viewimage").on("load",function() {
+      if (fullscreen) {
+        var maxwidth= window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+        var maxheight= window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+        if ($("#viewimage")[0].naturalWidth/maxwidth>$("#viewimage")[0].naturalHeight/maxheight) {
+          $("#viewimage").css("min-width","100vw");
+          $("#viewimage").css("min-height","");
+        } else {
+          $("#viewimage").css("min-height","100vh");
+          $("#viewimage").css("min-width","");
+        }
+      }
+    });
     $(document).keydown(function(e) {
       if (e.keyCode==27 && fullscreen) {
         togglefullscreen();
