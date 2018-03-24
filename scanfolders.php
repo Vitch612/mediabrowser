@@ -5,10 +5,9 @@ include "include.php";
 authenticate();
 include "head.php";
 show_nav();
-echo '<script>$(document).ready(function () {$(\'[data-toggle="tooltip"]\').tooltip(); });</script>';
 echo '<div class="row box"><div class="col-xs-12">';
 echo '<div class="row"><form action="' . $base . '/scanfolders.php" method="POST">
-    <div class="col-xs-1"><input data-placement="bottom" data-toggle="tooltip" title="This process can take a very long time, make sure to leave the page opened" class="btn btn-primary" type="submit" name="scanfiles" value="Scan FS"></div>
+    <div class="col-xs-1"><input data-placement="bottom" title="This process can take a very long time" class="btn btn-primary" type="submit" name="scanfiles" value="Scan FS"></div>
     <div class="col-xs-1"><input class="form-control" type="number" name="chunksize" value="0" min="0" max="65535" step="1024"></div>
     <div class="col-xs-8"><label>Number of bytes to scan in each file to generate checksum. 0 means the whole file will be scanned.<BR>(note that after the first scan the same value should be used when rescanning)</label></div>        
     </form></div>';
