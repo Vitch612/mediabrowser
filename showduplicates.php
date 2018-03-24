@@ -170,12 +170,13 @@ function dirscan($dirpath) {
 ini_set('max_execution_time', 0);
 ob_implicit_flush(true);
 show_nav();
-echo '<div class="row box"><div class="col-xs-12">Please wait for directory scan to complete before results are displayed. <img width="20" height="20" class="progress" src="pix/progress.gif"><BR>(note: bitrates are inaccurate in case of vbr mp3 files)<BR><BR>';
+echo '<div class="row box"><div class="col-xs-12">Please wait for directory scan before results start displayed. <img width="20" height="20" class="progress" src="pix/progress.gif"><BR>notes:<BR>- bitrates are inaccurate in case of vbr mp3 files<BR>- delete buttons only work after all results are displayed<BR><BR>';
 ob_flush();
-foreach ($shares as $folder=>$info) {
-  break;
+foreach ($shares as $share=>$info) {
+  if ($info["searchable"]==1)
+    dirscan(substr($share,0,strlen($share)-1));
 }
-dirscan($folder);
+
 $count1=0;
 $count2=0;
 echo '<script>
@@ -184,10 +185,10 @@ $(document).ready(function() {
   var background;
   $(".progress").hide();
   $(".song").mouseenter(function() {
-  background=$(this).css("background-color");
-  $(this).css("background-color","pink");
+    background=$(this).css("background-color");
+    $(this).css("background-color","pink");
   }).mouseleave(function() {  
-  $(this).css("background-color",background);
+    $(this).css("background-color",background);
   });
   $(".delete").click(function() {
     target=$(this);
@@ -207,8 +208,7 @@ $(document).ready(function() {
   });
 });
 </script>';
- 
- 
+  
 foreach($names as $namecode=>$entry) {
   if ($entry["count"]>1 && count($entry["sig"])>1) {
     $string="";

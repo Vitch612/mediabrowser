@@ -36,7 +36,6 @@ $(document).ready(function () {
     $('#searchform').submit(function() {
       return false;
     });
-    $("#ScanPage").attr("href", "scanfolders.php");
     $("#searchbutton").click(function (event) {
         $(".progress").show();
         lastsize = 0;
@@ -55,11 +54,6 @@ $(document).ready(function () {
             $(".progress").hide();
         });
         event.preventDefault();
-    });
-    $("#ScanPage").click(function (e) {
-        if (!confirm("The scan process shoud only be ran when files in a searchable share have changed. The scan page can take a long time to run, are you sure you want to open it?")) {
-            e.preventDefault();
-        }
     });
     $(".nolink").click(function (event) {
         if ($($(this).attr("href")).hasClass("mycollapsed")) {

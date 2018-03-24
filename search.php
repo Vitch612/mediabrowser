@@ -48,8 +48,6 @@ else
 register_shutdown_function('shutdown');
 ob_implicit_flush(1);
 
-
-
 if (isset($_REQUEST["searchstring"]) && $_REQUEST["searchstring"]!="" && isset($_REQUEST["playlist"])) {
   foreach ($shares as $share=>$info) {
     if ($info["searchable"]==1)

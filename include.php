@@ -115,7 +115,7 @@ function show_nav() {
    <li class=\"list-group-item\"><a title=\"Homepage\" href=\"$base\"><img src=\"$base/pix/home.png\"/></a></li>
    <li class=\"list-group-item\"><a title=\"Manage Playlists\" href=\"$base/playlists.php\"><img src=\"$base/pix/playlist.png\"/></a></li>
    <li class=\"list-group-item\"><a id=\"DuplicatesPage\" title=\"Manage Duplicates Sorted By Name\" href=\"$base/showduplicates.php\"><img src=\"$base/pix/duplicate.png\"/></a></li>
-   <li class=\"list-group-item\"><a id=\"ScanPage\" title=\"Scan Files In Searchable Shares\" href=\"#\"><img src=\"$base/pix/scan.png\"/></a></li>
+   <li class=\"list-group-item\"><a id=\"ScanPage\" title=\"Scan Files In Searchable Shares\" href=\"$base/scanfolders.php\"><img src=\"$base/pix/scan.png\"/></a></li>
    <li class=\"list-group-item\"><a title=\"Settings Configuration\" href=\"$base/settings.php\"><img src=\"$base/pix/settings.png\"/></a></li>
    </ul></div></div>";
 }
