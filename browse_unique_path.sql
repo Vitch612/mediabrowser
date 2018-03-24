@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Mar 23, 2018 at 11:21 AM
+-- Generation Time: Mar 25, 2018 at 02:23 AM
 -- Server version: 5.7.21
 -- PHP Version: 7.2.2
 
@@ -21,8 +21,6 @@ SET time_zone = "+00:00";
 --
 -- Database: `browse`
 --
-CREATE DATABASE IF NOT EXISTS `browse` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
-USE `browse`;
 
 -- --------------------------------------------------------
 
@@ -37,7 +35,7 @@ CREATE TABLE `duplicates` (
   `Path` varchar(1024) NOT NULL,
   `Filename` varchar(255) NOT NULL,
   `MD5` char(32) NOT NULL,
-  `Size` int(11) NOT NULL,
+  `Size` bigint(19) NOT NULL,
   `Modtime` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -54,7 +52,7 @@ CREATE TABLE `files` (
   `Path` varchar(1024) NOT NULL,
   `Filename` varchar(255) NOT NULL,
   `MD5` char(32) NOT NULL,
-  `Size` int(11) NOT NULL,
+  `Size` bigint(19) NOT NULL,
   `Modtime` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -149,31 +147,31 @@ ALTER TABLE `shares`
 -- AUTO_INCREMENT for table `duplicates`
 --
 ALTER TABLE `duplicates`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `files`
 --
 ALTER TABLE `files`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=91837;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=93467;
 
 --
 -- AUTO_INCREMENT for table `playlist`
 --
 ALTER TABLE `playlist`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
 
 --
 -- AUTO_INCREMENT for table `playlistentries`
 --
 ALTER TABLE `playlistentries`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51586;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51683;
 
 --
 -- AUTO_INCREMENT for table `shares`
 --
 ALTER TABLE `shares`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Constraints for dumped tables

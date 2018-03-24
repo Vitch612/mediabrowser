@@ -28,7 +28,7 @@ if (isset($_REQUEST["addtoplaylist"])) {
   }
 } else if (isset($_REQUEST["addplaylist"])) {
   if ($mysql->insert("playlist",["Name"=>$_REQUEST["addplaylist"]])) {
-    echo '<span><img class="delete" target="' . $mysql->insert_id  . '" src="pix/delete.png"/><a href="#'.$mysql->insert_id .'" class="showplaylist">' . $_REQUEST["addplaylist"] . '</a><form action="'.$base.'/showplaylist.php" method="POST" style="display:inline;margin-left:5px;position:relative;top:7px;"><input type="hidden" name="playlist" value="'.$mysql->insert_id .'"><input type="submit" style="background-color:transparent;border-style:none;position:relative;top:-6px;" Value="&#9658;"/></form><BR></span>';
+    echo '<span><img class="delete" target="' . $mysql->insert_id  . '" src="pix/delete.png"/><a href="#'.$mysql->insert_id .'" class="showplaylist">' . $_REQUEST["addplaylist"] . '</a><form action="'.$base.'/showplaylist.php" method="POST" style="display:inline;margin-left:5px;position:relative;top:7px;"><input type="hidden" name="playlist" value="'.$mysql->insert_id .'"><input type="submit" style="font-size:26px;background-color:transparent;border-style:none;position:relative;top:-4px;" Value="&#9658;"/></form><BR></span>';
     echo '<div style="display:none;" id="playlist_'.$mysql->insert_id.'">';    
   } else {
     echo "Error: ".$mysql->error;
@@ -244,7 +244,7 @@ if (isset($_REQUEST["addtoplaylist"])) {
   echo '<input class="btn btn-primary" type="button" value="Add" name="addplaylist">';
   echo '</div></div><div class="row"><div class="playlists col-xs-12">';
   foreach ($result as $row) {
-    echo '<span><img class="delete" target="' . $row["ID"] . '" src="pix/delete.png" style="margin-right:10px;"/><a href="#'.$row["ID"].'" class="showplaylist">' . $row["Name"] . '</a><form action="'.$base.'/showplaylist.php" method="POST" style="display:inline;margin-left:5px;position:relative;top:7px;"><input type="hidden" name="playlist" value="'.$row["ID"] .'"><input type="submit" style="background-color:transparent;border-style:none;position:relative;top:-6px;" Value="&#9658;"/></form><BR></span>';
+    echo '<span><img class="delete" target="' . $row["ID"] . '" src="pix/delete.png" style="margin-right:10px;"/><a href="#'.$row["ID"].'" class="showplaylist">' . $row["Name"] . '</a><form action="'.$base.'/showplaylist.php" method="POST" style="display:inline;margin-left:5px;position:relative;top:7px;"><input type="hidden" name="playlist" value="'.$row["ID"] .'"><input type="submit" style="font-size:26px;background-color:transparent;border-style:none;position:relative;top:-4px;" Value="&#9658;"/></form><BR></span>';
     echo '<div style="display:none;" id="playlist_'.$row["ID"].'">';
     $plresult = $mysql->select("playlistentries", ["*"],"`Playlist`='".$row["ID"]."'");  
     foreach($plresult as $plrow) {

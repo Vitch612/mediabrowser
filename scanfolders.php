@@ -7,13 +7,13 @@ include "head.php";
 show_nav();
 echo '<div class="row box"><div class="col-xs-12">';
 echo '<div class="row"><form action="' . $base . '/scanfolders.php" method="POST">
-    <div class="col-xs-1"><input data-placement="bottom" title="This process can take a very long time" class="btn btn-primary" type="submit" name="scanfiles" value="Scan FS"></div>
-    <div class="col-xs-1"><input class="form-control" type="number" name="chunksize" value="0" min="0" max="65535" step="1024"></div>
-    <div class="col-xs-8"><label>Number of bytes to scan in each file to generate checksum. 0 means the whole file will be scanned.<BR>(note that after the first scan the same value should be used when rescanning)</label></div>        
+    <div class="col-md-1"><input data-placement="bottom" title="This process can take a very long time" class="btn btn-primary" type="submit" name="scanfiles" value="Scan FS"></div>
+    <div class="col-md-1"><input class="form-control" type="number" name="chunksize" value="0" min="0" max="65535" step="1024"></div>
+    <div class="col-md-8"><label>Number of bytes to scan in each file to generate checksum. 0 means the whole file will be scanned.<BR>(note that after the first scan the same value should be used when rescanning)</label></div>        
     </form></div>';
 echo '<div class="row"><form action="' . $base . '/scanfolders.php" method="POST">
-    <div class="col-xs-2"><input class="btn btn-primary" type="submit" name="checkchanges" value="Scan DB"></div>
-    <div class="col-xs-10"><label>Run a scan to verify all the files in the database still exist on the filesystem</label></div>
+    <div class="col-md-2"><input class="btn btn-primary" type="submit" name="checkchanges" value="Scan DB"></div>
+    <div class="col-md-10"><label>Run a scan to verify all the files in the database still exist on the filesystem</label></div>
     </form></div>';
 echo '</div></div>';
 if ($_REQUEST["scanfiles"]) {
@@ -67,7 +67,7 @@ if ($_REQUEST["scanfiles"]) {
               fclose($fh);
               if (!$mysql->insert("files", ["Share" => $shareid, "Path" => substr($fullpath, strpos($fullpath, $share) + strlen($share)), "Filename" => $file, "MD5" => $md5, "Size" => filesize($fullpath), "Modtime" => filemtime($fullpath)])) {
                 if (strpos($mysql->error, "Duplicate entry") >= 0) {
-                  if (!$mysql->insert("duplicates", ["Share" => $shareid, "Path" => $fullpath, "Filename" => $file, "MD5" => $md5, "Size" => filesize($fullpath), "Modtime" => filemtime($fullpath)])) {
+                  if (!$mysql->insert("duplicates", ["Share" => $shareid, "Path" => substr($fullpath, strpos($fullpath, $share) + strlen($share)), "Filename" => $file, "MD5" => $md5, "Size" => filesize($fullpath), "Modtime" => filemtime($fullpath)])) {
                     logmsg("insert in duplicates: " . $mysql->error);
                   }
                 } else {
