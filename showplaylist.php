@@ -40,7 +40,7 @@ if (isset($_REQUEST["entry"])) {
   if (check_permission($path)) {
     if (file_exists($path) && is_file($path)) {
       $filename = utf8_encode(substr($path, strrpos($path, "/") + 1));
-      echo '<div class="row box"><div class="col-xs-12 mediacontainer"><div class="row"><div class="col-xs-12">&#8634;&nbsp;<input style="margin-right:10px;" type="checkbox" checked name="loop" class="form-check-input">&#8605;&nbsp;<input style="margin-right:10px;" type="checkbox" checked name="shuffle" class="form-check-input"><a href="#" class="previousentry" style="margin-right:15px;margin-left:10px;">&#9194;</a><a class="nextentry" href="#">&#9193;</a><BR><span class="entryname"><a href="'.$fullurl.'" class="filelink">'.$filename.'</a></span></div></div>';
+      echo '<div class="row box"><div class="col-xs-12 mediacontainer"><div class="row"><div class="col-xs-12">&#8634;&nbsp;<input style="margin-right:10px;" type="checkbox" checked name="loop" class="form-check-input">&#8605;&nbsp;<input style="margin-right:10px;" type="checkbox" checked name="shuffle" class="form-check-input"><a href="#" class="previousentry" style="font-size:22px;margin-right:15px;margin-left:10px;">&#9194;</a><a class="nextentry" style="font-size:22px;" href="#">&#9193;</a><BR><span class="entryname"><a href="'.$fullurl.'" class="filelink">'.$filename.'</a></span></div></div>';
       $type;
       switch ($file_types[get_file_type($path)]) {
         case "video":
