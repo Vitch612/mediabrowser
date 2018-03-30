@@ -34,6 +34,12 @@ if (isset($_REQUEST["entry"])) {
       if (count($share) > 0) {
         $path = $share[0]["Path"] . $file[0]["Path"];
         $fullurl = $_SERVER["REQUEST_SCHEME"] . "://" . $_SERVER["HTTP_HOST"] . $base . "/file/" . base64_encode($path) . substr($path, strrpos($path, "."));
+        if (strrpos($path,".")!==false) {
+          if (file_exists(substr($path,0,strrpos($path,".")).".srt")) {
+            
+          }
+          $srturl = $_SERVER["REQUEST_SCHEME"] . "://" . $_SERVER["HTTP_HOST"] . $base . "/file/" . base64_encode(substr($path,0,strrpos($path,".")).".srt") . ".srt";
+        }        
       }
     }
   }
@@ -45,7 +51,14 @@ if (isset($_REQUEST["entry"])) {
       switch ($file_types[get_file_type($path)]) {
         case "video":
           $type="video";
-          echo "<div class=\"row\"><div class=\"col-xs-12 mediadiv\"><video style=\"margin-top:10px;height:auto;\" id=\"avplay\" controls><source src=\"$fullurl\" type=\"video/mp4\">Your browser does not support the video tag.</video></div></div>";
+          if (strlen($srturl)>0) {
+            echo '<script type="text/javascript" src="'.$base.'/js/videosub-0.9.9.js"></script>';
+            echo "<div class=\"row\"><div class=\"col-xs-12 mediadiv\"><video style=\"margin-top:10px;height:auto;\" id=\"avplay\" controls><source src=\"$fullurl\" type=\"video/mp4\">
+                  <track label=\"English\" kind=\"subtitles\" srclang=\"en\" src=\"$srturl\" default>
+                  Your browser does not support the video tag.</video></div></div>";
+          }            
+          else
+            echo "<div class=\"row\"><div class=\"col-xs-12 mediadiv\"><video style=\"margin-top:10px;height:auto;\" id=\"avplay\" controls><source src=\"$fullurl\" type=\"video/mp4\">Your browser does not support the video tag.</video></div></div>";
           break;
         case "audio":
           $type="audio";
@@ -78,23 +91,6 @@ if (isset($_REQUEST["entry"])) {
         $(".message").html($(".message").html()+" "+text);
       }
       
-      function getfirst() {
-          $.ajax({
-            url: "'.$base.'/showplaylist.php",
-            method: "POST",
-            data: {playlist:currentplaylist,entry:currententry}
-          }).done(function (data) {
-            var ret=data.split(",");    
-            if (mediatype=="audio" || mediatype=="video")
-              player.src=ret[0];
-            else if (mediatype=="image") {
-              $("#viewimage")[0].src=ret[0];
-            }
-            $(".entryname").html(atob(ret[1]));
-          });
-
-      }
-
       function pointtonext() {
         var loop=$("input[name=\'loop\']").is(":checked");
         var shuffle=$("input[name=\'shuffle\']").is(":checked");
@@ -162,6 +158,8 @@ if (isset($_REQUEST["entry"])) {
               $("#viewimage")[0].src=ret[0];
             }
             $(".entryname").html(atob(ret[1]));
+          }).fail(function() {
+            setTimeout(getnext,250,d);
           });
         }
       };
@@ -219,7 +217,6 @@ if (isset($_REQUEST["entry"])) {
         fullscreen=!fullscreen;
       }
       $(document).ready(function() {
-        //addmsg("DOCREADY "+mediatype);
         $(document).keydown(function(e) {
           //alert(e.keyCode);
           if (e.keyCode==27 && fullscreen) {
@@ -260,24 +257,26 @@ if (isset($_REQUEST["entry"])) {
         });
         if (mediatype=="audio" || mediatype=="video") {
           player = $("#avplay")[0];
-          //getfirst();
           player.play();
-          player.onplay = function() {
-            retry=0;
+          player.onplay = function() {            
+            setTimeout(function() {
+              if (!player.paused) {
+                retry=0;  
+              }
+            },50);
           };
           player.oncanplay = function() {
-            //addmsg("canplay");
             player.play();
           };
           player.onerror = function() {
             //addmsg("error "+retry);
             if (retry == 0) {
               retry=1;
-              player.play();
+              player.load();
             } else if (retry == 1) {
               retry=2;
               setTimeout(function() {
-                player.play();  
+                player.load();
               },100);
             } else {
               retry=0;
@@ -288,11 +287,11 @@ if (isset($_REQUEST["entry"])) {
             //addmsg("stalled "+retry);
             if (retry == 0) {
               retry=1;
-              player.play();
+              player.load();
             } else if (retry == 1) {
               retry=2;
               setTimeout(function() {
-                player.play();  
+                player.load();
               },100);
             } else {
               retry=0;
@@ -300,7 +299,6 @@ if (isset($_REQUEST["entry"])) {
             }
           };
           player.onended  = function() {
-            //addmsg("ended");
             getnext();
           };
         }

@@ -134,6 +134,9 @@ if (!function_exists('mime_content_type')) {
   function mime_content_type($filename) {
     $mime_types = array(
       'txt' => 'text/plain',
+      'srt' => 'text/srt',
+      'sub' => 'text/plain',
+      'vtt' => 'text/vtt',
       'htm' => 'text/html',
       'html' => 'text/html',
       'php' => 'text/html',
