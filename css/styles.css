@@ -1,3 +1,7 @@
+.message {
+ color: red;
+ font-weight: bold;
+}
 .delete {
   cursor: pointer;
 }

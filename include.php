@@ -12,6 +12,14 @@ $file_types=["image","audio","video","pdf","zip","exe","html","text","folder","o
 $file_icons=["pix/image.png","pix/mp3.png","pix/video.png","pix/pdf.png","pix/zip.png","pix/exe.png","pix/html.png","pix/text.png","pix/folder.png"];
 $base=substr($_SERVER["PHP_SELF"],0,strpos($_SERVER["PHP_SELF"],"/",1));
 $applicationfolder=substr($_SERVER["SCRIPT_FILENAME"],0,strrpos($_SERVER["SCRIPT_FILENAME"],"/"));
+//function script_end() {
+//  logmsg("request\n".print_r(getallheaders(),true));
+//  logmsg("response\n".print_r(headers_list(),true));
+//  if (connection_aborted()) {
+//    logmsg("Connection Aborted");
+//  }
+//}
+//register_shutdown_function("script_end");
 
 $datalock=false;
 $seed=0;
