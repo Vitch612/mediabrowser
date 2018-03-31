@@ -91,9 +91,14 @@ if (isset($_REQUEST["entry"])) {
         $(".message").html($(".message").html()+" "+text);
       }
       
+      function isPlaying() {
+        return player.currentTime > 0 && !player.paused && !player.ended && player.readyState > 2;
+      }
+      
       function tryplay() {
-        if (player.paused) {
-          if (retry>=10) {
+        if (!isPlaying()) {
+          //addmsg("tryplay "+retry);
+          if (retry>=20) {
             getnext();
           } else {
             player.play();
@@ -275,7 +280,7 @@ if (isset($_REQUEST["entry"])) {
           getnext();
         });
         if (mediatype=="audio" || mediatype=="video") {
-          player = $("#avplay")[0];
+          player = $("#avplay")[0];          
           tryplay();
           player.onplay = function() {            
             tryplay();
@@ -283,8 +288,8 @@ if (isset($_REQUEST["entry"])) {
           player.oncanplay = function() {
             tryplay();
           };
-          player.onerror = function() {
-            //addmsg("error");
+          player.onerror = function() {          
+            //addmsg("error "+player.error.code);
             if (player.error.code == 3 || player.error.code == 4)
               getnext();
             else
