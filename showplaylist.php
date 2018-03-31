@@ -153,6 +153,7 @@ if (isset($_REQUEST["entry"])) {
 
       function getnext(d) {
         d = d || false;
+        retry=0;
         var doload;
         if (d)
           doload=pointtoprev();
@@ -173,6 +174,10 @@ if (isset($_REQUEST["entry"])) {
             }
             $(".entryname").html(atob(ret[1]));
           }).fail(function() {
+            if (!d)
+              doload=pointtoprev();
+            else
+              doload=pointtonext();
             setTimeout(getnext,250,d);
           });
         }
@@ -279,11 +284,14 @@ if (isset($_REQUEST["entry"])) {
             tryplay();
           };
           player.onerror = function() {
-            //addmsg("error "+retry);
-            tryplay();
+            //addmsg("error");
+            if (player.error.code == 3 || player.error.code == 4)
+              getnext();
+            else
+              tryplay();
           };
           player.onstalled = function() {
-            //addmsg("stalled "+retry);
+            //addmsg("stalled");
             tryplay();
           };
           player.onended  = function() {
