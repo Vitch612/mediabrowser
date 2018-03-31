@@ -92,18 +92,17 @@ if (isset($_REQUEST["entry"])) {
       }
       
       function tryplay() {
-        player.play();
-        setTimeout(function() {
-          if (player.paused) {
-            retry+=1;
-            if (retry>=5) {
-              retry=0;
-              getnext();
-            } else {
-              setTimeout(tryplay,50);
-            }
+        if (player.paused) {
+          if (retry>=10) {
+            getnext();
+          } else {
+            player.play();
+            retry++;
+            setTimeout(tryplay,50);
           }
-        },50);
+        } else {
+          retry=0;
+        }
       }
 
       function pointtonext() {
@@ -272,16 +271,12 @@ if (isset($_REQUEST["entry"])) {
         });
         if (mediatype=="audio" || mediatype=="video") {
           player = $("#avplay")[0];
-          player.play();
+          tryplay();
           player.onplay = function() {            
-            setTimeout(function() {
-              if (!player.paused) {
-                retry=0;  
-              }
-            },50);
+            tryplay();
           };
           player.oncanplay = function() {
-            player.play();
+            tryplay();
           };
           player.onerror = function() {
             //addmsg("error "+retry);
