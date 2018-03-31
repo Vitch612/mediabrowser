@@ -91,6 +91,21 @@ if (isset($_REQUEST["entry"])) {
         $(".message").html($(".message").html()+" "+text);
       }
       
+      function tryplay() {
+        player.play();
+        setTimeout(function() {
+          if (player.paused) {
+            retry+=1;
+            if (retry>=5) {
+              retry=0;
+              getnext();
+            } else {
+              setTimeout(tryplay,50);
+            }
+          }
+        },50);
+      }
+
       function pointtonext() {
         var loop=$("input[name=\'loop\']").is(":checked");
         var shuffle=$("input[name=\'shuffle\']").is(":checked");
@@ -270,33 +285,11 @@ if (isset($_REQUEST["entry"])) {
           };
           player.onerror = function() {
             //addmsg("error "+retry);
-            if (retry == 0) {
-              retry=1;
-              player.load();
-            } else if (retry == 1) {
-              retry=2;
-              setTimeout(function() {
-                player.load();
-              },100);
-            } else {
-              retry=0;
-              getnext();
-            }      
+            tryplay();
           };
           player.onstalled = function() {
             //addmsg("stalled "+retry);
-            if (retry == 0) {
-              retry=1;
-              player.load();
-            } else if (retry == 1) {
-              retry=2;
-              setTimeout(function() {
-                player.load();
-              },100);
-            } else {
-              retry=0;
-              getnext();
-            }
+            tryplay();
           };
           player.onended  = function() {
             getnext();
