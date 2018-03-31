@@ -129,7 +129,7 @@ function dirlist($dirpath,$show=0) {
 			$fsize="";
       //$fsize=dirSize($TheLinkedFile);
       $cpath=base64_encode(clean_dirpath($TheLinkedFile));      
-      $filename=utf8_encode($file);
+      $filename=$file;
 			echo "<tr bgcolor=\"$BGCOLOR\"><td><a href=\"?path=$cpath\"><img class=\"img-fluid\" src=\"pix/folder.png\"/></a></td><td width=\"100%\"><a href=\"?path=$cpath\">".$filename."</a></td><td align=right>$fsize</td></tr>";
 		}
 	}
@@ -160,7 +160,7 @@ function dirlist($dirpath,$show=0) {
       if (!is_numeric($fsize)) {
         $fsize="";
       }      
-      $filename=utf8_encode($file);
+      $filename=$file;
       echo "<tr bgcolor=\"$BGCOLOR\"><td>$linko<img class=\"img-fluid\" src=\"$icon\"/>$linke</td></td><td width=\"100%\">$linko$filename$linke</td><td align=right>$fsize</td></tr>";
 		}
 	}

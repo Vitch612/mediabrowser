@@ -13,7 +13,7 @@ if (isset($_REQUEST["addtoplaylist"])) {
       $result=$mysql->select("files",["ID","Filename"],"`Path`='".$mysql->conn->real_escape_string(substr($target,strlen($share)))."' AND `Share`='".$info["ID"]."'");
       if (count($result)!=0) {
         if ($mysql->insert("playlistentries",["Playlist"=>$_REQUEST["addtoplaylist"],"File"=>$result[0]["ID"],"Weight"=>0])) {
-          echo $mysql->insert_id." ".utf8_encode($result[0]["Filename"])."<BR>";
+          echo $mysql->insert_id." ".$result[0]["Filename"]."<BR>";
         } else
           echo "Error: ".$mysql->error;
       } else
@@ -249,7 +249,7 @@ if (isset($_REQUEST["addtoplaylist"])) {
     $plresult = $mysql->select("playlistentries", ["*"],"`Playlist`='".$row["ID"]."'");  
     foreach($plresult as $plrow) {
         $plentry=$mysql->select("files",["*"],"`ID`='".$plrow["File"]."'");
-        echo $plrow["ID"]." ".utf8_encode($plentry[0]["Filename"])."<BR>";
+        echo $plrow["ID"]." ".$plentry[0]["Filename"]."<BR>";
     }
     echo '</div>';
   }

@@ -12,8 +12,8 @@ if (isset($_REQUEST["entry"])) {
       $share = $mysql->select("Shares", ["Path"], "`ID`='" . $file[0]["Share"] . "'");
       if (count($share) > 0) {
         $path = $share[0]["Path"] . $file[0]["Path"];        
-        $fullurl = $_SERVER["REQUEST_SCHEME"] . "://" . $_SERVER["HTTP_HOST"] . $base . "/file/" . base64_encode($path) . substr($path, strrpos($path, "."));        
-        die($fullurl.",".base64_encode("<a href=\"$fullurl\" class=\"filelink\">".utf8_encode(basename($path))."</a>"));
+        $fullurl = $_SERVER["REQUEST_SCHEME"] . "://" . $_SERVER["HTTP_HOST"] . $base . "/file/" . base64_encode($path) . substr($path, strrpos($path, "."));
+        die($fullurl.",".base64_encode("<a href=\"$fullurl\" class=\"filelink\">".basename($path)."</a>"));
       }
     }
   }
@@ -45,8 +45,8 @@ if (isset($_REQUEST["entry"])) {
   }
   if (check_permission($path)) {    
     if (file_exists($path) && is_file($path)) {
-      $filename = utf8_encode(substr($path, strrpos($path, "/") + 1));     
-      echo '<div class="row box"><div class="col-xs-12 mediacontainer"><div class="row"><div class="col-xs-12">&#8634;&nbsp;<input style="margin-right:10px;" type="checkbox" checked name="loop" class="form-check-input">&#8605;&nbsp;<input style="margin-right:10px;" type="checkbox" checked name="shuffle" class="form-check-input"><a href="#" class="previousentry" style="font-size:22px;margin-right:15px;margin-left:10px;">&#9194;</a><a class="nextentry" style="font-size:22px;" href="#">&#9193;</a><BR><span class="entryname"><a href="'.$fullurl.'" class="filelink">'.$filename.'</a></span></div></div>';
+      $filename = substr($path, strrpos($path, "/") + 1);
+      echo '<div class="row box"><div class="col-xs-12 mediacontainer"><div class="row"><div class="col-xs-12">&#8634;&nbsp;<input style="margin-right:10px;" type="checkbox" checked name="loop" class="form-check-input">&#8605;&nbsp;<input style="margin-right:10px;" type="checkbox" checked name="shuffle" class="form-check-input"><a href="#" class="previousentry" style="font-size:22px;margin-right:15px;margin-left:10px;">&#9194;</a><a class="nextentry" style="font-size:22px;" href="#">&#9193;</a><BR><span class="entryname"><a href="'.$fullurl.'" title="'.$path.'" class="filelink">'.$filename.'</a></span></div></div>';
       $type;
       switch ($file_types[get_file_type($path)]) {
         case "video":
