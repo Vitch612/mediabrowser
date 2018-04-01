@@ -13,7 +13,7 @@ if (isset($_REQUEST["entry"])) {
       if (count($share) > 0) {
         $path = $share[0]["Path"] . $file[0]["Path"];        
         $fullurl = $_SERVER["REQUEST_SCHEME"] . "://" . $_SERVER["HTTP_HOST"] . $base . "/file/" . base64_encode($path) . substr($path, strrpos($path, "."));
-        die($fullurl.",".base64_encode("<a href=\"$fullurl\" class=\"filelink\">".basename($path)."</a>"));
+        die($fullurl.",".base64_encode("<a href=\"$fullurl\" title=\"".$path."\"class=\"filelink\">".basename($path)."</a>"));
       }
     }
   }
@@ -98,19 +98,21 @@ if (isset($_REQUEST["entry"])) {
       
       function tryplay(first) {
         first=first||false;
-        var numretries=20;
-        if (mediatype=="video")
-          numretries=200;
         if (first) {
           if (tryingtoplay) {
+            //addmsg("firsttryrejected");
             return;
           } else {
+            //addmsg("firsttry");
             tryingtoplay=true;
           }          
         }
+        var numretries=20;
+        if (mediatype=="video")
+          numretries=200;
         if (!isPlaying()) {
           if (retry>=numretries) {
-            addmsg("tryfailed");
+            //addmsg("playfail");
             tryingtoplay=false;
             getnext();
           } else {
@@ -189,6 +191,7 @@ if (isset($_REQUEST["entry"])) {
             var ret=data.split(",");    
             if (mediatype=="audio" || mediatype=="video") {
               player.src=ret[0];
+              //addmsg("getnexttryplay");
               tryplay(true);
             } else if (mediatype=="image") {
               $("#viewimage")[0].src=ret[0];
@@ -294,21 +297,19 @@ if (isset($_REQUEST["entry"])) {
           getnext();
         });
         if (mediatype=="audio" || mediatype=="video") {
-          player = $("#avplay")[0];          
+          player = $("#avplay")[0];
+          //addmsg("pageloadtry");
           tryplay(true);
-          player.onplay = function() {            
-            tryplay(true);
+          player.onplay = function() {
+            //addmsg("onplay");
+            //tryplay(true);
           };
           player.oncanplay = function() {
-            tryplay(true);
+            //addmsg("canplay");
+            //tryplay(true);
           };
-          player.onerror = function() {                      
-            if (player.error.code == 3 || player.error.code == 4) {
-              getnext();
-            } else {
-              addmsg("error "+player.error.code);
-              tryplay(true);
-            }              
+          player.onerror = function() {
+            tryplay(true);
           };
           player.onstalled = function() {
             //addmsg("stalled");

@@ -10,7 +10,7 @@ $fullurl=$_SERVER["REQUEST_SCHEME"] . "://" . $_SERVER["HTTP_HOST"].$base."/file
 if (check_permission($path)) {
   if (file_exists($path) && is_file($path)) {
     $filename = utf8_encode(substr($path, strrpos($path, "/") + 1));
-    echo "<div class=\"row box\"><div class=\"col-xs-12 mediacontainer\"><div class=\"row\"><div class=\"col-xs-12\">Direct Link <a href=\"$fullurl\" class=\"filelink\">$filename</a></div></div>";
+    echo "<div class=\"row box\"><div class=\"col-xs-12 mediacontainer\"><div class=\"row\"><div class=\"col-xs-12\">Direct Link <a href=\"$fullurl\" title=\"".$path."\" class=\"filelink\">$filename</a></div></div>";
     switch ($file_types[get_file_type($path)]) {
       case "video":
         $srturl="";        
