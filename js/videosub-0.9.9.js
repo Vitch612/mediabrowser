@@ -24,6 +24,7 @@ function videosub_tcsecs(tc) {
 
 function videosub_main() {
     var myVideo = document.getElementsByTagName('video')[0];
+    var pointtosub=0;
     var tracksupport = typeof myVideo.addTextTrack == "function" ? true : false;
     $VIDEOSUB('video').each(function(el) {
         var subtitlesrc = '';
@@ -96,19 +97,7 @@ function videosub_main() {
 
             $VIDEOSUB(el).addListener('seeked', function(an_event){
                     el.subcount = 0;
-                    while (videosub_timecode_max(el.subtitles[el.subcount][1]) < this.currentTime.toFixed(1)) {
-                            el.subcount++;
-                            if (el.subcount > el.subtitles.length-1) {
-                                    el.subcount = el.subtitles.length-1;
-                                    break;
-                            }
-                    }
-            });
-            $VIDEOSUB(el).addListener('timeupdate', function(an_event){                                        
-                    var subtitle = '';
                     var i;
-                    var pointtosub;
-                    var match=false;
                     for (i=0;i<el.subtitles[el.subcount].length;i++) {
                       if (el.subtitles[el.subcount][i].indexOf("-->")>=0) {
                         if (this.currentTime.toFixed(1) > videosub_timecode_min(el.subtitles[el.subcount][i]) && this.currentTime.toFixed(1) < videosub_timecode_max(el.subtitles[el.subcount][i])) {
@@ -116,6 +105,23 @@ function videosub_main() {
                           match=true;
                           break;
                         }                          
+                      }                          
+                    }
+            });
+            $VIDEOSUB(el).addListener('timeupdate', function(an_event){                                        
+                    var subtitle = '';
+                    var match=false;                    
+                    var i=pointtosub;
+                    for (;i<el.subtitles[el.subcount].length;i++) {
+                      if (el.subtitles[el.subcount][i].indexOf("-->")>=0) {
+                        if (this.currentTime.toFixed(1) > videosub_timecode_min(el.subtitles[el.subcount][i]) && this.currentTime.toFixed(1) < videosub_timecode_max(el.subtitles[el.subcount][i])) {
+                          pointtosub=i;
+                          match=true;
+                          break;
+                        }
+                        if (this.currentTime.toFixed(1) < videosub_timecode_min(el.subtitles[el.subcount][i])) {
+                          break;
+                        }
                       }                          
                     }
                     if (match) {
