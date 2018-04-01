@@ -109,14 +109,14 @@ function dirlist($dirpath,$show=0) {
   
 	$dir_handle = @opendir($dirpath) or die;
 	echo "<div id=\"$id\" class=\"row".($show==0?" mycollapsed":"")."\"><div class=\"col-xs-12\"><table class=\"table-responsive\" width=\"100%\">";
-	$TheLinkedFile = $dirpath."/..";
+	$TheLinkedFile = $dirpath."../";
   $cpath= base64_encode($TheLinkedFile);
 	echo "<tr bgcolor=\"FFFFFF\"><td><a href=\"?path=$cpath\"><img class=\"img-fluid\" src=\"pix/up.png\"/></a></td><td width=\"100%\"><a href=\"?path=$cpath\">..</a></td><td></td></tr>";
 	$toggle="false";
 	while ($file = readdir($dir_handle)) {
 		if($file == "." || $file == "..")
 			continue;
-    $TheLinkedFile = $dirpath."/".$file;  
+    $TheLinkedFile = $dirpath.$file;
 		$len=strlen($file);
 		if (is_dir($TheLinkedFile)) {
 			if ($toggle=="true") {
@@ -128,7 +128,7 @@ function dirlist($dirpath,$show=0) {
 			}
 			$fsize="";
       //$fsize=dirSize($TheLinkedFile);
-      $cpath=base64_encode(clean_dirpath($TheLinkedFile));      
+      $cpath=base64_encode(clean_dirpath($TheLinkedFile."/"));      
       $filename=$file;
 			echo "<tr bgcolor=\"$BGCOLOR\"><td><a href=\"?path=$cpath\"><img class=\"img-fluid\" src=\"pix/folder.png\"/></a></td><td width=\"100%\"><a href=\"?path=$cpath\">".$filename."</a></td><td align=right>$fsize</td></tr>";
 		}
@@ -138,7 +138,7 @@ function dirlist($dirpath,$show=0) {
 	while ($file = readdir($dir_handle)) {
 		if($file == "." || $file == "..")
 			continue;
-    $TheLinkedFile = $dirpath."/".$file;  
+    $TheLinkedFile = $dirpath.$file;  
 		$len=strlen($file);
 		$insert=substr($file,$len-5,5);
 		if (is_dir($TheLinkedFile)) {

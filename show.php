@@ -13,7 +13,16 @@ if (check_permission($path)) {
     echo "<div class=\"row box\"><div class=\"col-xs-12 mediacontainer\"><div class=\"row\"><div class=\"col-xs-12\">Direct Link <a href=\"$fullurl\" class=\"filelink\">$filename</a></div></div>";
     switch ($file_types[get_file_type($path)]) {
       case "video":
-        echo "<div class=\"row\"><div class=\"col-xs-12 mediadiv\"><video style=\"margin-top:10px;height:auto;\" id=\"avplay\" controls><source src=\"$fullurl\" type=\"video/mp4\">Your browser does not support the video tag.</video></div></div>";
+        $srturl="";        
+        if (file_exists(substr($path,0,strrpos($path,".")).".srt")) {
+          $srturl = $_SERVER["REQUEST_SCHEME"] . "://" . $_SERVER["HTTP_HOST"] . $base . "/file/" . base64_encode(substr($path,0,strrpos($path,".")).".srt") . ".srt";
+        }
+        if (strlen($srturl)>0)          
+          echo '<script type="text/javascript" src="'.$base.'/js/videosub-0.9.9.js"></script>';
+        echo "<div class=\"row\"><div class=\"col-xs-12 mediadiv\"><video style=\"margin-top:10px;height:auto;\" id=\"avplay\" controls><source src=\"$fullurl\" type=\"video/mp4\">";
+        if (strlen($srturl)>0)          
+          echo "<track label=\"English\" kind=\"subtitles\" srclang=\"en\" src=\"$srturl\" default>";
+        echo "Your browser does not support the video tag.</video></div></div>";
         break;
       case "audio":
         echo "<div class=\"row\"><div class=\"col-xs-12 mediadiv\"><audio style=\"margin-top:40px;\" id=\"avplay\" controls><source src=\"$fullurl\" type=\"audio/mpeg\">Your browser does not support the audio element.</audio></div></div>";

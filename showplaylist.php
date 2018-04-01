@@ -24,6 +24,7 @@ if (isset($_REQUEST["entry"])) {
   show_nav();
   $playlistid = $mysql->conn->real_escape_string($_REQUEST["playlist"]);
   $playlist = $mysql->select("playlist", ["Name"], "`ID`='" . $playlistid . "'");
+  $srturl="";
   if (count($playlist) > 0) {
     $entries = $mysql->select("playlistentries", ["*"], "`Playlist`='" . $playlistid . "'");
     $numentries = count($entries);
@@ -36,9 +37,8 @@ if (isset($_REQUEST["entry"])) {
         $fullurl = $_SERVER["REQUEST_SCHEME"] . "://" . $_SERVER["HTTP_HOST"] . $base . "/file/" . base64_encode($path) . substr($path, strrpos($path, "."));
         if (strrpos($path,".")!==false) {
           if (file_exists(substr($path,0,strrpos($path,".")).".srt")) {
-            
-          }
-          $srturl = $_SERVER["REQUEST_SCHEME"] . "://" . $_SERVER["HTTP_HOST"] . $base . "/file/" . base64_encode(substr($path,0,strrpos($path,".")).".srt") . ".srt";
+            $srturl = $_SERVER["REQUEST_SCHEME"] . "://" . $_SERVER["HTTP_HOST"] . $base . "/file/" . base64_encode(substr($path,0,strrpos($path,".")).".srt") . ".srt";
+          }          
         }        
       }
     }
@@ -56,7 +56,7 @@ if (isset($_REQUEST["entry"])) {
             echo "<div class=\"row\"><div class=\"col-xs-12 mediadiv\"><video style=\"margin-top:10px;height:auto;\" id=\"avplay\" controls><source src=\"$fullurl\" type=\"video/mp4\">
                   <track label=\"English\" kind=\"subtitles\" srclang=\"en\" src=\"$srturl\" default>
                   Your browser does not support the video tag.</video></div></div>";
-          }            
+          }
           else
             echo "<div class=\"row\"><div class=\"col-xs-12 mediadiv\"><video style=\"margin-top:10px;height:auto;\" id=\"avplay\" controls><source src=\"$fullurl\" type=\"video/mp4\">Your browser does not support the video tag.</video></div></div>";
           break;
@@ -82,6 +82,7 @@ if (isset($_REQUEST["entry"])) {
       var previousentry=0;
       var currentplaylist='.$playlistid.';
       var retry=0;
+      var tryingtoplay=false;
 
       function pointtorand() {
         currententry=Math.round((Math.random() * (pl_length-1)));
@@ -95,10 +96,22 @@ if (isset($_REQUEST["entry"])) {
         return player.currentTime > 0 && !player.paused && !player.ended && player.readyState > 2;
       }
       
-      function tryplay() {
+      function tryplay(first) {
+        first=first||false;
+        var numretries=20;
+        if (mediatype=="video")
+          numretries=200;
+        if (first) {
+          if (tryingtoplay) {
+            return;
+          } else {
+            tryingtoplay=true;
+          }          
+        }
         if (!isPlaying()) {
-          //addmsg("tryplay "+retry);
-          if (retry>=20) {
+          if (retry>=numretries) {
+            addmsg("tryfailed");
+            tryingtoplay=false;
             getnext();
           } else {
             player.play();
@@ -106,6 +119,7 @@ if (isset($_REQUEST["entry"])) {
             setTimeout(tryplay,50);
           }
         } else {
+          tryingtoplay=false;
           retry=0;
         }
       }
@@ -158,6 +172,8 @@ if (isset($_REQUEST["entry"])) {
 
       function getnext(d) {
         d = d || false;
+        var cur=currententry;
+        var prev=previousentry;
         retry=0;
         var doload;
         if (d)
@@ -173,16 +189,14 @@ if (isset($_REQUEST["entry"])) {
             var ret=data.split(",");    
             if (mediatype=="audio" || mediatype=="video") {
               player.src=ret[0];
-              player.play();
+              tryplay(true);
             } else if (mediatype=="image") {
               $("#viewimage")[0].src=ret[0];
             }
             $(".entryname").html(atob(ret[1]));
           }).fail(function() {
-            if (!d)
-              doload=pointtoprev();
-            else
-              doload=pointtonext();
+            currententry=cur;
+            previousentry=prev;
             setTimeout(getnext,250,d);
           });
         }
@@ -281,25 +295,27 @@ if (isset($_REQUEST["entry"])) {
         });
         if (mediatype=="audio" || mediatype=="video") {
           player = $("#avplay")[0];          
-          tryplay();
+          tryplay(true);
           player.onplay = function() {            
-            tryplay();
+            tryplay(true);
           };
           player.oncanplay = function() {
-            tryplay();
+            tryplay(true);
           };
-          player.onerror = function() {          
-            //addmsg("error "+player.error.code);
-            if (player.error.code == 3 || player.error.code == 4)
+          player.onerror = function() {                      
+            if (player.error.code == 3 || player.error.code == 4) {
               getnext();
-            else
-              tryplay();
+            } else {
+              addmsg("error "+player.error.code);
+              tryplay(true);
+            }              
           };
           player.onstalled = function() {
             //addmsg("stalled");
-            tryplay();
+            tryplay(true);
           };
           player.onended  = function() {
+            //addmsg("ended");
             getnext();
           };
         }
