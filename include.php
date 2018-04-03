@@ -20,16 +20,15 @@ $file_types=["image","audio","video","pdf","zip","exe","html","text","folder","o
 $file_icons=["pix/image.png","pix/mp3.png","pix/video.png","pix/pdf.png","pix/zip.png","pix/exe.png","pix/html.png","pix/text.png","pix/folder.png","pix/other.png"];
 $base=substr($_SERVER["PHP_SELF"],0,strpos($_SERVER["PHP_SELF"],"/",1));
 $applicationfolder=substr($_SERVER["SCRIPT_FILENAME"],0,strrpos($_SERVER["SCRIPT_FILENAME"],"/"));
-$datalock=false;
 $seed=0;
 
-function get_id() {  
+function get_id() {
   global $seed;
   if ($seed==0) {
     list($usec, $sec) = explode(' ', microtime());
     $seed=$sec + $usec * 1000000;
     srand($seed);
-  }  
+  }
   $id="";
   for ($i=0;$i<10;$i++) {
     $id.=rand(0,9);
@@ -44,39 +43,27 @@ function logmsg($text) {
 
 function readPersistent($name) {
   global $applicationfolder;
-  global $datalock;
-  while($datalock);
-  $s = file_get_contents("$applicationfolder/data/data.sr");
+  while(($s = file_get_contents("$applicationfolder/data/data.sr"))===false);
   $a = unserialize($s);
   return $a[$name];
 }
 
 function deletePersistent($name) {
   global $applicationfolder;
-  global $datalock;
-  while($datalock);
-  $s=[];
-  $s = file_get_contents("$applicationfolder/data/data.sr");
+  while(($s = file_get_contents("$applicationfolder/data/data.sr"))===false);
   $a = unserialize($s);
   unset($a[$name]);
   $s=serialize($a);
-  $datalock=true;
   while (!file_put_contents("$applicationfolder/data/data.sr", $s));
-  $datalock=false;
 }
 
 function savePersistent($name,$value) {
   global $applicationfolder;
-  global $datalock;
-  while($datalock);
-  $s=[];
-  $s = file_get_contents("$applicationfolder/data/data.sr");
+  while(($s = file_get_contents("$applicationfolder/data/data.sr"))===false);
   $a = unserialize($s);
   $a[$name]=$value;
   $s=serialize($a);
-  $datalock=true;
   while(!file_put_contents("$applicationfolder/data/data.sr", $s));
-  $datalock=false;
 }
 
 function startWith($haystack,$needle,$case=false) {
@@ -111,7 +98,7 @@ function get_file_type($file) {
 	else if (endWith($file,".txt") || endWith($file,".inf") || endWith($file,".srt") || endWith($file,".sub") || endWith($file,".ini",0000))
 	  return 7;
   else if (is_dir($file))
-    return 8;  
+    return 8;
 	else
 	  return 9;
 }
@@ -152,7 +139,7 @@ function check_permission($path) {
       $allowed = true;
     }
   }
-  if (!$allowed) 
+  if (!$allowed)
     logmsg("Access Denied: ".$path);
   return $allowed;
 }
@@ -160,7 +147,7 @@ function check_permission($path) {
 function authenticate() {
   global $base;
   if (readPersistent("password") != "") {
-    session_start();    
+    session_start();
     if (!isset($_SESSION["loggedin"])) {
       if (isset($_SERVER['PHP_AUTH_USER']))
         if (hash("sha512", $_SERVER['PHP_AUTH_PW']) == readPersistent("password"))

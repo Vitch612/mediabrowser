@@ -93,7 +93,10 @@ if (isset($_REQUEST["entry"])) {
       }
       
       function isPlaying() {
-        return player.currentTime > 0 && !player.paused && !player.ended && player.readyState > 2;
+        if (player.error===null)
+          return player.currentTime > 0 && !player.paused && !player.ended && player.readyState > 2;
+        else
+          return player.error.code==0 && player.currentTime > 0 && !player.paused && !player.ended && player.readyState > 2;
       }
       
       function tryplay(first) {
@@ -112,7 +115,6 @@ if (isset($_REQUEST["entry"])) {
           numretries=200;
         if (!isPlaying()) {
           if (retry>=numretries) {
-            //addmsg("playfail");
             tryingtoplay=false;
             getnext();
           } else {
@@ -191,8 +193,6 @@ if (isset($_REQUEST["entry"])) {
             var ret=data.split(",");    
             if (mediatype=="audio" || mediatype=="video") {
               player.src=ret[0];
-              //addmsg("getnexttryplay");
-              tryplay(true);
             } else if (mediatype=="image") {
               $("#viewimage")[0].src=ret[0];
             }
@@ -298,18 +298,18 @@ if (isset($_REQUEST["entry"])) {
         });
         if (mediatype=="audio" || mediatype=="video") {
           player = $("#avplay")[0];
-          //addmsg("pageloadtry");
-          tryplay(true);
-          player.onplay = function() {
-            //addmsg("onplay");
-            //tryplay(true);
-          };
+          player.onloadedmetadata = function() {
+            //addmsg("loadedmetadata");
+          }
           player.oncanplay = function() {
             //addmsg("canplay");
-            //tryplay(true);
+            tryplay(true);
           };
           player.onerror = function() {
-            tryplay(true);
+            if (player.error.code==3 || player.error.code==4) {              
+              getnext();
+            } else
+              tryplay(true);
           };
           player.onstalled = function() {
             //addmsg("stalled");
