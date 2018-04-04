@@ -110,11 +110,12 @@ if (isset($_REQUEST["entry"])) {
             tryingtoplay=true;
           }          
         }
-        var numretries=20;
+        var numretries=30;
         if (mediatype=="video")
-          numretries=200;
+          numretries=250;
         if (!isPlaying()) {
           if (retry>=numretries) {
+            addmsg("tryfailed");
             tryingtoplay=false;
             getnext();
           } else {
@@ -304,6 +305,9 @@ if (isset($_REQUEST["entry"])) {
           player.oncanplay = function() {
             //addmsg("canplay");
             tryplay(true);
+          };
+          player.onabort = function() {
+            //addmsg("abort");
           };
           player.onerror = function() {
             if (player.error.code==3 || player.error.code==4) {              

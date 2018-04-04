@@ -14,6 +14,7 @@ $max_search=2;
 $result=$mysql->select("shares",["*"]);
 $shares=[];
 foreach($result as $row) {
+  try {readdir(opendir($row["Path"]));} catch (Exception $ex) {}
   $shares[$row["Path"]]=["searchable"=>(int)$row["Searchable"],"ID"=>$row["ID"]];
 }
 $file_types=["image","audio","video","pdf","zip","exe","html","text","folder","other"];
@@ -37,33 +38,66 @@ function get_id() {
 }
 
 function logmsg($text) {
- global $applicationfolder;
- file_put_contents("$applicationfolder/logfile.txt",date("Y-m-d h:i:sa").": ".$text."\n",FILE_APPEND);
+  global $applicationfolder;
+  file_put_contents("$applicationfolder/logfile.txt",date("Y-m-d h:i:sa").": ".$text."\n",FILE_APPEND);
 }
 
+function getfile($filepath) {
+  $retval="";
+  if (file_exists($filepath)) {
+    while(($fh=fopen($filepath,"r"))===false);
+    while(flock($fh, LOCK_SH)===false);
+    $chunk=1024;
+    while(!feof($fh)) {
+      while(($s=fread($fh,$chunk))===false);
+      if (strlen($s)>0) 
+        $retval.=$s;
+    } 
+    flock($fh, LOCK_UN);
+    while(fclose($fh)===false);    
+  }
+  return $retval;
+}
+function putfile($filepath,$data) {
+  while(($fh=fopen($filepath,"w"))===false);  
+  while(flock($fh, LOCK_EX)===false);
+  fwrite($fh, $data);
+  flock($fh, LOCK_UN);
+  while(fclose($fh)===false);
+}
 function readPersistent($name) {
   global $applicationfolder;
-  while(($s = file_get_contents("$applicationfolder/data/data.sr"))===false);
-  $a = unserialize($s);
-  return $a[$name];
+  if (($s=getfile("$applicationfolder/data/data.sr"))!="")
+    if (($a = unserialize($s))!==false)
+      if (isset($a[$name]))
+        return $a[$name];
+  return NULL;
 }
-
 function deletePersistent($name) {
   global $applicationfolder;
-  while(($s = file_get_contents("$applicationfolder/data/data.sr"))===false);
-  $a = unserialize($s);
-  unset($a[$name]);
-  $s=serialize($a);
-  while (!file_put_contents("$applicationfolder/data/data.sr", $s));
+  if (file_exists("$applicationfolder/data/data.sr"))
+    if (($s=getfile("$applicationfolder/data/data.sr"))!="")
+      if(($a = unserialize($s))!==false)
+        if (isset($a[$name])) {
+          unset($a[$name]);
+          $s=serialize($a);          
+          putfile("data.sr", $s);
+          return true;
+        }
+  return false;
 }
-
-function savePersistent($name,$value) {
+function savePersistent($name,$value) {  
   global $applicationfolder;
-  while(($s = file_get_contents("$applicationfolder/data/data.sr"))===false);
-  $a = unserialize($s);
+  if (!file_exists("$applicationfolder/data/data.sr")) {
+    $a=[];  
+  } else {
+    if (($s=getfile("$applicationfolder/data/data.sr"))=="" || ($a = unserialize($s))===false)
+      return false;
+  }
   $a[$name]=$value;
-  $s=serialize($a);
-  while(!file_put_contents("$applicationfolder/data/data.sr", $s));
+  $s=serialize($a);  
+  putfile("$applicationfolder/data/data.sr", $s);        
+  return true;
 }
 
 function startWith($haystack,$needle,$case=false) {
