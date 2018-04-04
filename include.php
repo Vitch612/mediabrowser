@@ -14,7 +14,6 @@ $max_search=2;
 $result=$mysql->select("shares",["*"]);
 $shares=[];
 foreach($result as $row) {
-  try {readdir(opendir($row["Path"]));} catch (Exception $ex) {}
   $shares[$row["Path"]]=["searchable"=>(int)$row["Searchable"],"ID"=>$row["ID"]];
 }
 $file_types=["image","audio","video","pdf","zip","exe","html","text","folder","other"];
