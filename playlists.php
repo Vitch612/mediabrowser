@@ -1,4 +1,5 @@
 <?php
+ini_set('memory_limit',2048);
 include "include.php";
 
 function search() {

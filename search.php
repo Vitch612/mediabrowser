@@ -1,5 +1,5 @@
 <?php
-
+ini_set('memory_limit',2048);
 function shutdown() {
   $curconc = readPersistent("search");
   if ($curconc > 1)

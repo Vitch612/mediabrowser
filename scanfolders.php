@@ -1,5 +1,6 @@
 <?php
 ob_implicit_flush(true);
+ini_set('memory_limit',2048);
 ini_set('max_execution_time', 0);
 include "include.php";
 authenticate();

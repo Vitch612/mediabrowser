@@ -62,7 +62,7 @@ if (isset($_REQUEST["entry"])) {
           break;
         case "audio":
           $type="audio";
-          echo "<div class=\"row\"><div class=\"col-xs-12 mediadiv\"><audio style=\"margin-top:10px;\" id=\"avplay\" controls><source src=\"$fullurl\" type=\"audio/mpeg\">Your browser does not support the audio element.</audio></div></div>";
+          echo "<div class=\"row\"><div class=\"col-xs-12 mediadiv\"><audio style=\"margin-top:10px;\" id=\"avplay\" controls autoplay><source src=\"$fullurl\" type=\"audio/mpeg\">Your browser does not support the audio element.</audio></div></div>";
           break;
         case "image":
           $type="image";
@@ -310,6 +310,7 @@ if (isset($_REQUEST["entry"])) {
             //addmsg("abort");
           };
           player.onerror = function() {
+            addmsg("Error("+player.error.code+") "+player.error.message);
             if (player.error.code==3 || player.error.code==4) {              
               getnext();
             } else
