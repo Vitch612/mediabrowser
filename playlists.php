@@ -1,5 +1,6 @@
 <?php
-ini_set('memory_limit',2048);
+ini_set('memory_limit',2147483648);
+ini_set('max_execution_time', 60);
 include "include.php";
 
 function search() {

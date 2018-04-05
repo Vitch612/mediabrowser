@@ -1,6 +1,6 @@
 <?php
+ini_set('memory_limit',2147483648);
 ini_set('max_execution_time', 0);
-ini_set('memory_limit',2048);
 include "include.php";
 $count=0;
 $charsets=[];

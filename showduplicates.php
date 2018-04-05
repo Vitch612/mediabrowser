@@ -1,4 +1,6 @@
 <?php
+ini_set('memory_limit',2147483648);
+ini_set('max_execution_time', 0);
 include "include.php";
 authenticate();
 include "head.php";
@@ -167,7 +169,6 @@ function dirscan($dirpath) {
   closedir($dir_handle);        
 }
 
-ini_set('max_execution_time', 0);
 ob_implicit_flush(true);
 show_nav();
 echo '<div class="row box"><div class="col-xs-12">Please wait for directory scan before results start being displayed. <img width="20" height="20" class="progress" src="pix/progress.gif"><BR>notes:<BR>&nbsp;&nbsp;- bitrates are inaccurate in case of vbr mp3 files<BR>&nbsp;&nbsp;- delete buttons only work after all results are displayed<BR><BR>';
