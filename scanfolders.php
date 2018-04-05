@@ -1,5 +1,5 @@
 <?php
-ini_set('memory_limit',2147483648);
+ini_set('memory_limit',1073741824);
 ini_set('max_execution_time', 0);
 ob_implicit_flush(true);
 include "include.php";
