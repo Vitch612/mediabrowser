@@ -17,10 +17,10 @@ if (check_permission($path)) {
         if (file_exists(substr($path,0,strrpos($path,".")).".srt")) {
           $srturl = $_SERVER["REQUEST_SCHEME"] . "://" . $_SERVER["HTTP_HOST"] . $base . "/file/" . base64_encode(substr($path,0,strrpos($path,".")).".srt") . ".srt";
         }
-        if (strlen($srturl)>0)
+        if (strlen($srturl)>0 && !$mobile)
           echo '<script type="text/javascript" src="'.$base.'/js/videosub-0.9.9.js"></script>';
         echo "<div class=\"row\"><div class=\"col-xs-12 mediadiv\"><video style=\"margin-top:10px;height:auto;\" id=\"avplay\" controls><source src=\"$fullurl\" type=\"video/mp4\">";
-        if (strlen($srturl)>0)
+        if (strlen($srturl)>0 && !$mobile)
           echo "<track label=\"English\" kind=\"subtitles\" srclang=\"en\" src=\"$srturl\" default>";
         echo "Your browser does not support the video tag.</video></div></div>";
         break;

@@ -51,7 +51,7 @@ if (isset($_REQUEST["entry"])) {
       switch ($file_types[get_file_type($path)]) {
         case "video":
           $type="video";
-          if (strlen($srturl)>0) {
+          if (strlen($srturl)>0 && !$mobile) {
             echo '<script type="text/javascript" src="'.$base.'/js/videosub-0.9.9.js"></script>';
             echo "<div class=\"row\"><div class=\"col-xs-12 mediadiv\"><video style=\"margin-top:10px;height:auto;\" id=\"avplay\" controls><source src=\"$fullurl\" type=\"video/mp4\">
                   <track label=\"English\" kind=\"subtitles\" srclang=\"en\" src=\"$srturl\" default>
@@ -298,9 +298,12 @@ if (isset($_REQUEST["entry"])) {
           getnext();
         });
         if (mediatype=="audio" || mediatype=="video") {
-          player = $("#avplay")[0];
+          player = $("#avplay")[0];          
           player.onloadedmetadata = function() {
             //addmsg("loadedmetadata");
+          }
+          player.onplaying= function() {
+            player.playbackRate=1;
           }
           player.oncanplay = function() {
             //addmsg("canplay");
