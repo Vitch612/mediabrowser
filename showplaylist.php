@@ -7,11 +7,11 @@ if (isset($_REQUEST["entry"])) {
     $entries = $mysql->select("playlistentries", ["*"], "`Playlist`='" . $playlistid . "'");
     $numentries = count($entries);
     $entry = $entries[$_REQUEST["entry"]];
-    $file = $mysql->select("Files", ["Path", "Share"], "`ID`='" . $entry["File"] . "'");
+    $file = $mysql->select("files", ["Path", "Share"], "`ID`='" . $entry["File"] . "'");
     if (count($file) > 0) {
-      $share = $mysql->select("Shares", ["Path"], "`ID`='" . $file[0]["Share"] . "'");
+      $share = $mysql->select("shares", ["Path"], "`ID`='" . $file[0]["Share"] . "'");
       if (count($share) > 0) {
-        $path = $share[0]["Path"] . $file[0]["Path"];        
+        $path = $share[0]["Path"] . $file[0]["Path"];
         $fullurl = $_SERVER["REQUEST_SCHEME"] . "://" . $_SERVER["HTTP_HOST"] . $base . "/file/" . base64_encode($path) . substr($path, strrpos($path, "."));
         die($fullurl.",".base64_encode("<a href=\"$fullurl\" title=\"".$path."\"class=\"filelink\">".basename($path)."</a>"));
       }
@@ -29,21 +29,21 @@ if (isset($_REQUEST["entry"])) {
     $entries = $mysql->select("playlistentries", ["*"], "`Playlist`='" . $playlistid . "'");
     $numentries = count($entries);
     $entry = $entries[0];
-    $file = $mysql->select("Files", ["Path", "Share"], "`ID`='" . $entry["File"] . "'");
+    $file = $mysql->select("files", ["Path", "Share"], "`ID`='" . $entry["File"] . "'");
     if (count($file) > 0) {
-      $share = $mysql->select("Shares", ["Path"], "`ID`='" . $file[0]["Share"] . "'");
+      $share = $mysql->select("shares", ["Path"], "`ID`='" . $file[0]["Share"] . "'");
       if (count($share) > 0) {
         $path = $share[0]["Path"] . $file[0]["Path"];
         $fullurl = $_SERVER["REQUEST_SCHEME"] . "://" . $_SERVER["HTTP_HOST"] . $base . "/file/" . base64_encode($path) . substr($path, strrpos($path, "."));
         if (strrpos($path,".")!==false) {
           if (file_exists(substr($path,0,strrpos($path,".")).".srt")) {
             $srturl = $_SERVER["REQUEST_SCHEME"] . "://" . $_SERVER["HTTP_HOST"] . $base . "/file/" . base64_encode(substr($path,0,strrpos($path,".")).".srt") . ".srt";
-          }          
-        }        
+          }
+        }
       }
     }
   }
-  if (check_permission($path)) {    
+  if (check_permission($path)) {
     if (file_exists($path) && is_file($path)) {
       $filename = substr($path, strrpos($path, "/") + 1);
       echo '<div class="row box"><div class="col-xs-12 mediacontainer"><div class="row"><div class="col-xs-12">&#8634;&nbsp;<input style="margin-right:10px;" type="checkbox" checked name="loop" class="form-check-input">&#8605;&nbsp;<input style="margin-right:10px;" type="checkbox" checked name="shuffle" class="form-check-input"><a href="#" class="previousentry" style="font-size:22px;margin-right:15px;margin-left:10px;">&#9194;</a><a class="nextentry" style="font-size:22px;" href="#">&#9193;</a><BR><span class="entryname"><a href="'.$fullurl.'" title="'.$path.'" class="filelink">'.$filename.'</a></span></div></div>';
@@ -91,14 +91,14 @@ if (isset($_REQUEST["entry"])) {
       function addmsg(text) {
         $(".message").html($(".message").html()+" "+text);
       }
-      
+
       function isPlaying() {
         if (player.error===null)
           return player.currentTime > 0 && !player.paused && !player.ended && player.readyState > 2;
         else
           return player.error.code==0 && player.currentTime > 0 && !player.paused && !player.ended && player.readyState > 2;
       }
-      
+
       function tryplay(first) {
         first=first||false;
         if (first) {
@@ -108,7 +108,7 @@ if (isset($_REQUEST["entry"])) {
           } else {
             //addmsg("firsttry");
             tryingtoplay=true;
-          }          
+          }
         }
         var numretries=30;
         if (mediatype=="video")
@@ -132,12 +132,12 @@ if (isset($_REQUEST["entry"])) {
       function pointtonext() {
         var loop=$("input[name=\'loop\']").is(":checked");
         var shuffle=$("input[name=\'shuffle\']").is(":checked");
-        previousentry=currententry;  
+        previousentry=currententry;
         if (shuffle) {
           pointtorand();
           return true;
         }
-        if (currententry<pl_length-1) {  
+        if (currententry<pl_length-1) {
           currententry++;
           return true;
         }
@@ -170,7 +170,7 @@ if (isset($_REQUEST["entry"])) {
       }
 
       function imageanim() {
-        if (!pause)    
+        if (!pause)
           getnext();
         setTimeout(imageanim,2000);
       }
@@ -191,7 +191,7 @@ if (isset($_REQUEST["entry"])) {
             method: "POST",
             data: {playlist:currentplaylist,entry:currententry}
           }).done(function (data) {
-            var ret=data.split(",");    
+            var ret=data.split(",");
             if (mediatype=="audio" || mediatype=="video") {
               player.src=ret[0];
             } else if (mediatype=="image") {
@@ -208,7 +208,7 @@ if (isset($_REQUEST["entry"])) {
       var fullscreen=false;
       var pause=false;
       function togglefullscreen() {
-        if (fullscreen) {        
+        if (fullscreen) {
           $("#background").css("display","none");
           $("#background").css("position","");
           $("#background").css("top","");
@@ -232,7 +232,7 @@ if (isset($_REQUEST["entry"])) {
           $("#viewimage").css("max-height","73vh");
           $("#viewimage").css("z-index","");
           $("#viewimage").css("transform","");
-        } else {          
+        } else {
           $("#background").css("display","block");
           $("#background").css("position","fixed");
           $("#background").css("top","0");
@@ -253,7 +253,7 @@ if (isset($_REQUEST["entry"])) {
           $("#viewimage").css("min-height","100vh");
           $("#viewimage").css("max-height","100vh");
           $("#viewimage").css("max-width","100vw");
-          $("#viewimage").css("z-index","20");   
+          $("#viewimage").css("z-index","20");
           $("#viewimage").css("transform","translate(-50%, -50%)");
         }
         fullscreen=!fullscreen;
@@ -263,13 +263,22 @@ if (isset($_REQUEST["entry"])) {
           //alert(e.keyCode);
           if (e.keyCode==27 && fullscreen) {
             togglefullscreen();
-          } else if (e.keyCode==13) {
+          } else if (e.keyCode==13 || e.keyCode==0) {
+            getnext();
+          } else if (e.keyCode==32) {
             pause=!pause;
+            if (player!==undefined) {
+              if (player.paused) {
+                player.play();
+              } else {
+                player.pause();
+              }
+            }
           } else if (e.keyCode==37) {
             getnext(true);
           } else if (e.keyCode==39) {
             getnext();
-          }    
+          }
           return false;
         });
         if (mediatype=="image") {
@@ -289,7 +298,7 @@ if (isset($_REQUEST["entry"])) {
           });
           $("#viewimage").click(function() {
             togglefullscreen();
-          });    
+          });
         }
         $(".previousentry").click(function() {
           getnext(true);
@@ -298,7 +307,7 @@ if (isset($_REQUEST["entry"])) {
           getnext();
         });
         if (mediatype=="audio" || mediatype=="video") {
-          player = $("#avplay")[0];          
+          player = $("#avplay")[0];
           player.onloadedmetadata = function() {
             //addmsg("loadedmetadata");
           }
@@ -314,7 +323,7 @@ if (isset($_REQUEST["entry"])) {
           };
           player.onerror = function() {
             addmsg("Error("+player.error.code+") "+player.error.message);
-            if (player.error.code==3 || player.error.code==4) {              
+            if (player.error.code==3 || player.error.code==4) {
               getnext();
             } else
               tryplay(true);
@@ -339,5 +348,5 @@ if (isset($_REQUEST["entry"])) {
     header("HTTP/1.1 403 Access Denied");
     die("<h3>Access Denied</h3>");
   }
-  echo '</div></body></html>';  
+  echo '</div></body></html>';
 }
