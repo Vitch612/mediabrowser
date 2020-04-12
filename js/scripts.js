@@ -1,3 +1,53 @@
+function swipedetect(el, callback) {
+
+    var touchsurface = el,
+            swipedir,
+            startX,
+            startY,
+            distX,
+            distY,
+            threshold = 50, //required min distance traveled to be considered swipe
+            restraint = 30, // maximum distance allowed at the same time in perpendicular direction
+            allowedTime = 1500, // maximum time allowed to travel that distance
+            elapsedTime,
+            startTime,
+            handleswipe = callback || function (swipedir) {};
+
+    touchsurface.addEventListener('touchstart', function (e) {
+        var touchobj = e.changedTouches[0];
+        swipedir = 'none';
+        dist = 0;
+        startX = touchobj.pageX;
+        startY = touchobj.pageY;
+        startTime = new Date().getTime(); // record time when finger first makes contact with surface
+        //e.preventDefault()
+    }, false);
+
+    touchsurface.addEventListener('touchmove', function (e) {
+        //e.preventDefault()
+    }, false);
+
+    touchsurface.addEventListener('touchend', function (e) {
+        var touchobj = e.changedTouches[0];
+        distX = touchobj.pageX - startX; // get horizontal dist traveled by finger while in contact with surface
+        distY = touchobj.pageY - startY; // get vertical dist traveled by finger while in contact with surface
+        elapsedTime = new Date().getTime() - startTime; // get time elapsed
+
+        if (elapsedTime <= allowedTime) { // first condition for awipe met
+            if (Math.abs(distX) >= threshold && Math.abs(distY) <= restraint) { // 2nd condition for horizontal swipe met
+                swipedir = (distX < 0) ? 'left' : 'right'; // if dist traveled is negative, it indicates left swipe
+            } else if (Math.abs(distY) >= threshold && Math.abs(distX) <= restraint) { // 2nd condition for vertical swipe met
+                swipedir = (distY < 0) ? 'up' : 'down'; // if dist traveled is negative, it indicates up swipe
+            }
+        }
+        if (swipedir!=="none") {
+            e.preventDefault();
+            handleswipe(swipedir);
+        }
+
+    }, false);
+}
+
 function iteratethroughresults() {
     if (xhr.responseText !== undefined)
         if (xhr.responseText.length > lastsize) {
@@ -91,6 +141,146 @@ $(document).ready(function () {
     }, function () {
         $(this).children().removeClass("hilite");
     });
+
+    var prev=function () {
+        var query="";
+        if (window.location.toString().lastIndexOf("?")>=0) {
+            query=window.location.toString().substr(window.location.toString().lastIndexOf("?")+1,window.location.toString().length);
+        }
+        if ($("#previous").length>0) {
+            $(".displayedimage").css("position","relative");
+            $(".displayedimage").css("left","0px");
+            if ($(".displayedimage").length>0) {
+                $(".displayedimage").animate({"left":"2000px"},400,function() {
+                    window.location="/browse/show/"+$("#previous").html()+"?"+query;
+                });
+            } else {
+                window.location="/browse/show/"+$("#previous").html()+"?"+query;
+            }
+
+        }
+    };
+
+    var next=function() {
+        var query="";
+        if (window.location.toString().lastIndexOf("?")>=0) {
+            query=window.location.toString().substr(window.location.toString().lastIndexOf("?")+1,window.location.toString().length);
+        }
+        if ($("#next").length>0) {
+            $(".displayedimage").css("position","relative");
+            $(".displayedimage").css("right","0px");
+            if ($(".displayedimage").length>0) {
+                $(".displayedimage").animate({"right":"2000px"},400,function() {
+                    window.location="/browse/show/"+$("#next").html()+"?"+query;
+                });                
+            } else {
+                window.location="/browse/show/"+$("#next").html()+"?"+query;
+            }
+        }
+    };
+    $(".copybutton").click(function() {
+        var tmptext = document.createElement("textarea");
+        tmptext.value=$(this).data("text");
+        tmptext.id="tempdivforcopy";
+        document.getElementsByTagName("BODY")[0].appendChild(tmptext);
+        tmptext.select();
+        document.execCommand("copy");
+        document.getElementsByTagName("BODY")[0].removeChild(tmptext);
+    });
+    var folder=function() {
+        var query="";
+        if (window.location.toString().lastIndexOf("?")>=0) {
+            query=window.location.toString().substr(window.location.toString().lastIndexOf("?")+1,window.location.toString().length);
+        }
+        if ($("#folder").length>0) {
+            $(".displayedimage").css("position","relative");
+            $(".displayedimage").css("top","0px");
+            if ($(".displayedimage").length>0) {
+                $(".displayedimage").animate({"top":"5000px"},400,function() {
+                    window.location="/browse/?path="+$("#folder").html();
+                });
+            } else {
+                window.location="/browse/?path="+$("#folder").html();
+            }
+            
+        }
+    };
+    window.next=next;
+    window.prev=prev;
+    
+
+    $(".fullscreenlink").click(function (e) {
+        e.preventDefault();
+        var query="";
+        if (window.location.toString().lastIndexOf("?")>=0) {
+            query=window.location.toString().substr(window.location.toString().lastIndexOf("?")+1,window.location.toString().length);
+        }
+            
+        var redirect=$(this)[0].href;
+        if (query.indexOf("fullscreen=true")>=0) {
+            redirect=$(this)[0].href.replace("fullscreen=true","fullscreen=false");
+        }
+        if (typeof window.pagenumber !== "undefined") {
+            if (query==="") {
+                redirect+="?pagenumber="+window.pagenumber;
+            } else {
+                redirect+="&pagenumber="+window.pagenumber;
+            }
+        }
+        window.location=redirect;
+
+    })
+
+    var swcallback = function (direction) {
+        if (direction === "right") {
+            window.prev();
+        }
+        if (direction === "left") {
+            window.next();
+        }
+    };
+
+    var tapedTwice = false;
+    var tapHandler=function(event) {
+        if(!tapedTwice) {
+            tapedTwice = true;
+            setTimeout( function() {tapedTwice = false;}, 300 );
+            return false;
+        } else {
+            event.preventDefault();
+            folder();
+        }
+    }
+    if ($(".displayedimage").length>0)
+        $(".displayedimage")[0].addEventListener("touchstart", tapHandler);
+
+    $(".prevlink").click(function(e) {
+       e.preventDefault();
+       prev();
+    });
+    $(".nextlink").click(function(e) {
+       e.preventDefault();
+       next();
+    });
+
+    window.addEventListener("keydown", function (key) {
+
+        if (key.keyCode === 13 || key.keyCode === 27) {
+            folder();
+        }
+        if (key.keyCode === 37) {
+            window.prev();
+        }
+        if (key.keyCode === 39) {
+            window.next();
+        }
+    });
+
+    if ($(".displayedimage").length>0)
+        swipedetect($(".displayedimage")[0], swcallback);
+    if ($("#pdfdiv").length>0)
+        swipedetect($("#pdfdiv")[0], swcallback);
+
     /*
      var scripts = document.getElementsByTagName('script');
      var base = scripts[scripts.length-1].src;

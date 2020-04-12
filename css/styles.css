@@ -1,3 +1,6 @@
+#searchform {
+   margin-bottom:10px;
+}
 .message {
  color: red;
  font-weight: bold;
@@ -152,8 +155,7 @@
   margin-bottom:10px;
 }
 .table-responsive td {
-  min-width:20px !important;
-  padding:3px;
+  min-width:20px !important;  
 }
 .nolink {
   text-decoration:none !important;
@@ -167,10 +169,6 @@ a.previousentry:link,a.previousentry:visited,a.previousentry:hover,a.previousent
   text-decoration:none;
 }
 
-a.filelink:link,a.filelink:visited,a.filelink:hover,a.filelink:active  {
-  color: darkorchid;
-  text-decoration:none;
-}
 
 .bodydiv {
   word-wrap:break-word;
@@ -184,4 +182,93 @@ body
     text-align:left;
     margin:0;
     padding:10px;
+}
+
+#previous, #next, #folder {
+    display:none;
+}
+
+.prevlink {
+    float:left;
+}
+
+.nextlink {
+    float:right;
+}
+
+a.filelink:link,a.filelink:visited,a.filelink:hover,a.filelink:active,
+a.folderlink:link, a.folderlink:visited, a.folderlink:hover, a.folderlink:active,
+a.nextlink:link, a.nextlink:visited, a.nextlink:hover, a.nextlink:active,
+a.prevlink:link, a.prevlink:visited, a.prevlink:hover, a.prevlink:active {
+    color: #a91414;
+    text-decoration: none;
+}
+
+.folderlink {
+   position: absolute;
+   left: 50%;
+   margin-right: -50%;
+   transform: translate(-50%);
+}
+
+.mediacontainer {
+    overflow:hidden;
+    position:relative;
+}
+.nolinkcontainer {
+    white-space:nowrap;
+}
+.nolinkcontainer,
+.namecontainer {
+    width:100%;
+    padding:3px;
+}
+
+.namecontainer:hover {
+    background:#84414138;
+    
+}
+
+.pdf-page-canvas {
+    width:100%;
+    position:relative;
+}
+
+.navlinks {
+    width:100%;
+    padding-left:15px;
+    padding-right:15px;
+    height:26px;
+    position:relative;    
+    margin-bottom:10px;
+}
+
+.filelink,
+.prevlink,
+.nextlink,
+.folderlink { 
+    padding:2px 4px 2px 4px;
+    border: 1px solid transparent;
+    border-radius:3px;
+}
+
+
+.filelink:focus,
+.prevlink:focus,
+.nextlink:focus,
+.folderlink:focus,
+.filelink:hover,
+.prevlink:hover,
+.nextlink:hover,
+.folderlink:hover {
+    background:#bbb7b7;
+    border: 1px solid grey;
+    box-shadow: 2px 2px 5px #505050;
+}
+
+.copybutton {
+    width:22px;
+    height:22px;
+    cursor:pointer;
+    margin-left:10px;
 }

@@ -4,8 +4,8 @@ class database {
   public $error;
   public $insert_id;
 
-  function __construct() {        
-      $this->conn=new mysqli("localhost", "browse", "password", "browse");
+  function __construct($host="localhost",$database="browse",$username="browse",$password="password") {
+      $this->conn=new mysqli($host, $username, $password, $database);
   }
 
   public function isConnected() {
@@ -38,7 +38,7 @@ class database {
       return false;
     }
   }
-  
+
   public function insert($table,$values) {
     $sql="INSERT INTO `$table` (";
     if (count($values)>0) {
@@ -99,7 +99,7 @@ class database {
         }
       }
     } else {
-      logmsg("SQL ERROR: ".$this->conn->error." Query=".$sql);
+      //logmsg("SQL ERROR: ".$this->conn->error." Query=".$sql);
       $this->error=$this->conn->error;
     }
     return $data;
