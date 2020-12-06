@@ -102,16 +102,27 @@ function dirSize($directory) {
 function dirlist($dirpath, $show = 0) {
     global $file_types;
     global $file_icons;
+    global $shares;
     $id = get_id();
     echo "<div class=\"dirList box row\"><div class=\"col-xs-12\">";
     echo "<div class=\"row\"><div class=\"col-xs-12\"><a href=\"#$id\" class=\"nolink\">Folder: <b>" . clean_dirpath($dirpath) . "</b></a></div></div>";
-
+    
     $dir_handle = @opendir($dirpath) or die;
+    $isroot=false;
+    foreach($shares as $share=>$value) {
+        if ($dirpath==$share) {
+            $isroot=true;
+        }
+    }
     echo "<div id=\"$id\" class=\"row" . ($show == 0 ? " mycollapsed" : "") . "\"><div class=\"col-xs-12\"><table class=\"table-responsive\" width=\"100%\">";
     $TheLinkedFile = $dirpath . "../";
+    
     $cpath = base64_encode($TheLinkedFile);
-    echo "<tr bgcolor=\"FFFFFF\"><td><a href=\"?path=$cpath\"><div class=\"namecontainer\"><img class=\"img-fluid\" src=\"pix/up.png\"/></div></a></td><td width=\"100%\"><a href=\"?path=$cpath\"><div class=\"namecontainer\">..</div></a></td><td></td></tr>";
-    $toggle = "false";
+    if (!$isroot) {
+        echo "<tr bgcolor=\"FFFFFF\"><td class=\"icontd\"><a href=\"?path=$cpath\"><div class=\"namecontainer\"><img class=\"img-fluid\" src=\"pix/up.png\"/></div></a></td><td class=\"nametd\" colspan=2><a href=\"?path=$cpath\"><div class=\"namecontainer\">..</div></a></td></tr>";
+        $toggle = "false";
+    } else 
+        $toggle = "true";
     while ($file = readdir($dir_handle)) {
         if ($file == "." || $file == "..")
             continue;
@@ -125,7 +136,8 @@ function dirlist($dirpath, $show = 0) {
                 $toggle = "true";
                 $BGCOLOR = "F0F0F0";
             }
-            $fsize=dirSize($TheLinkedFile);
+            
+            //$fsize=dirSize($TheLinkedFile);
             if (!is_numeric($fsize)) {
                 $fsize = "";
             } else {
@@ -140,7 +152,7 @@ function dirlist($dirpath, $show = 0) {
             }
             $cpath = base64_encode(clean_dirpath($TheLinkedFile . "/"));
             $filename = $file;
-            echo "<tr bgcolor=\"$BGCOLOR\"><td><a href=\"?path=$cpath\"><div class=\"namecontainer\"><img class=\"img-fluid\" src=\"pix/folder.png\"/></div></a></td><td width=\"100%\"><a href=\"?path=$cpath\"><div class=\"namecontainer\">" . $filename . "</div></a></td><td align=right><div class=\"nolinkcontainer\">$fsize</div></td></tr>";
+            echo "<tr bgcolor=\"$BGCOLOR\"><td class=\"icontd\"><a href=\"?path=$cpath\"><div class=\"namecontainer\"><img class=\"img-fluid\" src=\"pix/folder.png\"/></div></a></td><td ".($fsize==""?"colspan=2":"")." class=\"nametd\"><a href=\"?path=$cpath\"><div class=\"namecontainer\">" . $filename . "</div></a></td>".($fsize==""?"":"<td class=\"sizetd\" align=right><div class=\"nolinkcontainer\">$fsize</div></td></tr>");
         }
     }
     closedir($dir_handle);
@@ -183,7 +195,7 @@ function dirlist($dirpath, $show = 0) {
             }
             $filename = $file;
             
-            $filelist[]=["row"=>"<tr bgcolor=\"$BGCOLOR\"><td>$linko<div class=\"namecontainer\"><img class=\"img-fluid\" src=\"$icon\"/></div>$linke</td></td><td width=\"100%\">$linko<div class=\"namecontainer\">$filename</div>$linke</td><td align=right><div class=\"nolinkcontainer\">$fsize</div></td></tr>","cpath"=>$cpath];
+            $filelist[]=["row"=>"<tr bgcolor=\"$BGCOLOR\"><td class=\"icontd\">$linko<div class=\"namecontainer\"><img class=\"img-fluid\" src=\"$icon\"/></div>$linke</td></td><td class=\"nametd\">$linko<div class=\"namecontainer\">$filename</div>$linke</td><td class=\"sizetd\" align=right><div class=\"nolinkcontainer\">$fsize</div></td></tr>","cpath"=>$cpath];
             
         }
     }
@@ -210,6 +222,9 @@ function dirlist($dirpath, $show = 0) {
 
 show_nav();
 search();
+
+
+
 if (isset($_GET["path"])) {
     $req = str_replace("\\", "/", clean_dirpath(base64_decode($_GET["path"])));
     if (check_permission($req))
@@ -223,6 +238,8 @@ if (isset($_GET["path"])) {
         dirlist($share);
     }
 }
+
+
 //echo '<pre>'.print_r($_SERVER,true).'</pre>';
 //echo '<div class="incGetSafe">'.debug().'</div>';
 echo '</div></body></html>';

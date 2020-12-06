@@ -150,7 +150,7 @@ function show_nav() {
 function clean_dirpath($path) {
   $concat=str_replace("\\","/",$path);
   while (($pos=strpos($concat,"/../"))>0) {
-    $prev=substr($concat,0,$pos-4);
+    $prev=substr($concat,0,$pos);
     if (($bef=strrpos($prev,"/"))>0)
       $concat=substr($concat,0,$bef).substr($concat,$pos+3);
     else

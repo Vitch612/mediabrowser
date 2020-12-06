@@ -10,7 +10,7 @@ class ResumeDownload {
   private $chunk = 2048;
   private $mime;
   private $path;
-  
+
   function __construct($file, $delay = 0) {
     if (!is_file($file)) {
       header(" HTTP/1.1 400 Invalid Request");
@@ -215,7 +215,9 @@ if (!function_exists('mime_content_type')) {
 }
 
 $str=$_SERVER["REQUEST_URI"];
-$path = base64_decode(substr($str, strrpos($str, "/") + 1, strrpos($str, ".") - strlen($str)));
+
+$path = base64_decode(substr($str, strrpos($str, "file/") + 5, strrpos($str, ".") - strlen($str)));
+
 $path = str_replace("\\", "/", clean_dirpath($path));
 if (check_permission($path)) {
   if (file_exists($path) && is_file($path)) {

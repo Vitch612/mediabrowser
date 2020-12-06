@@ -155,7 +155,7 @@
   margin-bottom:10px;
 }
 .table-responsive td {
-  min-width:20px !important;  
+  min-width:20px;  
 }
 .nolink {
   text-decoration:none !important;
@@ -272,3 +272,38 @@ a.prevlink:link, a.prevlink:visited, a.prevlink:hover, a.prevlink:active {
     cursor:pointer;
     margin-left:10px;
 }
+.namecontainer {
+    word-break:break-word;    
+}
+.table-responsive td.nametd {
+    width:100%;
+}
+.table-responsive td.icontd {
+    min-width:25px;
+    max-width:25px;
+    width:25px;
+}
+
+.sizetd {
+    background:#269abc11;
+}
+#pageselect {
+    width:100%;
+    margin-bottom:10px;
+}
+
+#pagenumberdisplay {
+    text-align:right;
+    white-space: nowrap;
+}
+
+.addtoplaylist:hover {
+    box-shadow: 0px 0px 5px black;
+    border-radius:8px;
+}
+/*
+.displayedimage {
+	max-width:fit-content !important;
+	width:auto !important;
+}
+*/

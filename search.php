@@ -18,16 +18,20 @@ function dirsearch($dirpath, $searchstring, $playlist = false) {
     if (is_dir($entry)) {
       dirsearch($entry, $searchstring, $playlist);
     } else {
-      $words = explode(" ", $searchstring);
-      $match = true;
-      foreach ($words as $word) {
-        if (substr($word,0,1)!="|") {
-          if (strpos(strtolower($file), strtolower($word)) === false)
-            $match = false;
-        } else {
-          if (strpos(strtolower($file), strtolower(substr($word,1))) !== false)
-            $match = true;
-        }
+      if ($searchstring=="*") {
+          $match = true;
+      } else {
+          $words = explode(" ", $searchstring);
+          $match = true;
+          foreach ($words as $word) {
+            if (substr($word,0,1)!="|") {
+              if (strpos(strtolower($file), strtolower($word)) === false)
+                $match = false;
+            } else {
+              if (strpos(strtolower($file), strtolower(substr($word,1))) !== false)
+                $match = true;
+            }
+      }
       }
       if ($match) {
         $count++;

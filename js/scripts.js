@@ -146,6 +146,11 @@ $(document).ready(function () {
         var query="";
         if (window.location.toString().lastIndexOf("?")>=0) {
             query=window.location.toString().substr(window.location.toString().lastIndexOf("?")+1,window.location.toString().length);
+            if (query.indexOf("gofullscreen=true")>0) {
+                query="gofullscreen=true";
+            } else if (query.indexOf("gofullscreen=false")>0) {
+                query="gofullscreen=false";
+            }
         }
         if ($("#previous").length>0) {
             $(".displayedimage").css("position","relative");
@@ -165,7 +170,12 @@ $(document).ready(function () {
         var query="";
         if (window.location.toString().lastIndexOf("?")>=0) {
             query=window.location.toString().substr(window.location.toString().lastIndexOf("?")+1,window.location.toString().length);
-        }
+            if (query.indexOf("gofullscreen=true")>0) {
+                query="gofullscreen=true";
+            } else if (query.indexOf("gofullscreen=false")>0) {
+                query="gofullscreen=false";
+            }
+        }        
         if ($("#next").length>0) {
             $(".displayedimage").css("position","relative");
             $(".displayedimage").css("right","0px");
@@ -208,28 +218,23 @@ $(document).ready(function () {
     window.next=next;
     window.prev=prev;
     
-
+    
+    
     $(".fullscreenlink").click(function (e) {
         e.preventDefault();
         var query="";
         if (window.location.toString().lastIndexOf("?")>=0) {
             query=window.location.toString().substr(window.location.toString().lastIndexOf("?")+1,window.location.toString().length);
         }
-            
         var redirect=$(this)[0].href;
         if (query.indexOf("fullscreen=true")>=0) {
             redirect=$(this)[0].href.replace("fullscreen=true","fullscreen=false");
         }
         if (typeof window.pagenumber !== "undefined") {
-            if (query==="") {
-                redirect+="?pagenumber="+window.pagenumber;
-            } else {
-                redirect+="&pagenumber="+window.pagenumber;
-            }
+            redirect+="&pagenumber="+window.pagenumber;
         }
         window.location=redirect;
-
-    })
+    });
 
     var swcallback = function (direction) {
         if (direction === "right") {
@@ -264,7 +269,6 @@ $(document).ready(function () {
     });
 
     window.addEventListener("keydown", function (key) {
-
         if (key.keyCode === 13 || key.keyCode === 27) {
             folder();
         }

@@ -1,11 +1,13 @@
 <?php
 $fullscreen=false;
-if ($_GET["gofullscreen"]=="true") {    
+if (isset($_GET["gofullscreen"])) {
+  if ($_GET["gofullscreen"]=="true") {
     $fullscreen=true;
+  }
 }
 include "include.php";
 include "head.php";
-if ($fullscreen) 
+if ($fullscreen)
     echo '<body style="padding:0;"><div class="container" style="width:100%;">';
 
 
@@ -17,7 +19,7 @@ function get_siblings($dirpath,$cpatho) {
     while ($file = readdir($dir_handle)) {
         if ($file == "." || $file == "..")
             continue;
-        $TheLinkedFile = $dirpath . $file;        
+        $TheLinkedFile = $dirpath . $file;
         if (is_dir($TheLinkedFile)) {
             continue;
         } else {
@@ -26,12 +28,12 @@ function get_siblings($dirpath,$cpatho) {
             if ($cpath==$cpatho) {
                 $prev=$pcpath;
             }
-            
-            if ($pcpath==$cpatho) {           
+
+            if ($pcpath==$cpatho) {
                 $next=$cpath;
             }
         }
-        if ($next !== null) 
+        if ($next !== null)
             break;
     }
     return ["prev"=>$prev,"next"=>$next];
@@ -40,27 +42,30 @@ function get_siblings($dirpath,$cpatho) {
 
 
 $fullscreen=false;
-if ($_GET["gofullscreen"]=="true") {    
+if ($_GET["gofullscreen"]=="true") {
     $fullscreen=true;
 }
 if (!$fullscreen)
     show_nav();
+
+
 $url=strtok($_SERVER["REQUEST_URI"], '?');
-$path = base64_decode(substr($url,strrpos($url,"/")+1));
-$cpath=substr($url,strrpos($url,"/")+1);
+$path = base64_decode(substr($url,strrpos($url,"show/")+5));
+$cpath=substr($url,strrpos($url,"show/")+5);
 $path = str_replace("\\","/",clean_dirpath($path));
 $folder=substr($path,0,strrpos($path,"/")+1);
 $folderhash=base64_encode($folder);
 $siblings=get_siblings($folder,$cpath);
-$fullurl=$_SERVER["REQUEST_SCHEME"] . "://" . $_SERVER["HTTP_HOST"].$base."/file/".substr($url,strrpos($url,"/")+1).substr($path,strrpos($path,"."));
+$fullurl=$_SERVER["REQUEST_SCHEME"] . "://" . $_SERVER["HTTP_HOST"].$base."/file/".substr($url,strrpos($url,"show/")+5).substr($path,strrpos($path,"."));
+
 if (check_permission($path)) {
   if (file_exists($path) && is_file($path)) {
     $filename = utf8_encode(substr($path, strrpos($path, "/") + 1));
-    if ($fullscreen) 
+    if ($fullscreen)
         echo "<div class=\"row\">";
     else
         echo "<div class=\"row box\">";
-    if ($siblings["next"]!==null)            
+    if ($siblings["next"]!==null)
         echo '<div id="next">'.$siblings["next"]."</div>";
     if ($siblings["prev"]!==null)
         echo '<div id="previous">'.$siblings["prev"]."</div>";
@@ -68,19 +73,19 @@ if (check_permission($path)) {
     if (!$fullscreen) {
         echo '<div class="navlinks">';
         if ($siblings["prev"]!==null)
-            echo "<a href=\"show/".$siblings["prev"]."\" class=\"prevlink\">&lt;&lt;</a>";        
-        if ($siblings["next"]!==null)            
-            echo "<a href=\"show/".$siblings["next"]."\" class=\"nextlink\">&gt;&gt;</a>";        
+            echo "<a href=\"show/".$siblings["prev"]."\" class=\"prevlink\">&lt;&lt;</a>";
+        if ($siblings["next"]!==null)
+            echo "<a href=\"show/".$siblings["next"]."\" class=\"nextlink\">&gt;&gt;</a>";
         echo '<a href="/browse/?path='.$folderhash.'" class="folderlink">Folder</a>';
         echo '</div>';
     }
     if ($fullscreen)
         echo "<div class=\"col-xs-12 mediacontainer\" style=\"padding:0;\">";
-    else 
+    else
         echo "<div class=\"col-xs-12 mediacontainer\">";
     switch ($file_types[get_file_type($path)]) {
       case "video":
-        $srturl="";        
+        $srturl="";
         if (file_exists(substr($path,0,strrpos($path,".")).".srt")) {
           $srturl = $_SERVER["REQUEST_SCHEME"] . "://" . $_SERVER["HTTP_HOST"] . $base . "/file/" . base64_encode(substr($path,0,strrpos($path,".")).".srt") . ".srt";
         }
@@ -148,21 +153,55 @@ if (check_permission($path)) {
                         page.render({canvasContext: canvas.getContext("2d"), viewport: viewport});
                     });
                 }
-                
+
                 pdfjsLib.getDocument(pdffile).then(function(pdf) {
                     thePdf = pdf;
                     viewer = document.getElementById("pdfdiv");
                     canvas = document.createElement("canvas");
-                    canvas.className = "pdf-page-canvas";                    
+                    canvas.className = "pdf-page-canvas";
                     viewer.appendChild(canvas);
                     renderPage(window.pagenumber, canvas);
+
+                    if (document.querySelector(".row.box")!= null) {
+                        var slidercontainer = document.createElement("div");
+                        var slider =  document.createElement("input");
+                        slider.id = "pageselect";
+                        slider.type = "range";
+                        slider.min = 1;
+                        slider.max = thePdf.numPages;
+                        slider.setAttribute("class","custom-range");
+                        slider.setAttribute("data-toggle","tooltip");
+                        slider.value = window.pagenumber;
+                        slider.title = window.pagenumber;
+                        slider.step = 1;
+                        document.querySelector(".row.box").insertBefore(slidercontainer,document.querySelector(".mediacontainer"));
+                        slidercontainer.innerHTML=\'<div class=\"col-xs-4\">Page</div><div class=\"col-xs-4 pageslidercontainer\"></div><div id=\"pagenumberdisplay\" class=\"col-xs-3\"></div>\';
+                        document.getElementById("pagenumberdisplay").innerHTML=window.pagenumber+"/"+thePdf.numPages;
+                        document.querySelector(".pageslidercontainer").appendChild(slider);
+
+                        $("#pageselect").bind("input",function() {
+                            $(this).attr("title",$(this).val()+"/"+thePdf.numPages);
+                            document.getElementById("pagenumberdisplay").innerHTML=$(this).val()+"/"+thePdf.numPages;
+                        });
+                        $("#pageselect").bind("change",function() {
+                            console.log("change triggered");
+                            try {
+                                window.pagenumber=parseInt($(this).val());
+                                renderPage(window.pagenumber, canvas);
+                            } catch(e) {
+                            }
+                        });
+                    }
                 });
                 window.next=function() {
                     if (window.pagenumber<thePdf.numPages) {
                         window.pagenumber=window.pagenumber+1;
+                        $("#pageselect").val(window.pagenumber);
+                        if (document.getElementById("pagenumberdisplay")!=null)
+                            document.getElementById("pagenumberdisplay").innerHTML=window.pagenumber+"/"+thePdf.numPages;
                         $(canvas).animate({"right":"2000px"},400,function() {
                             $(canvas).css("display","none");
-                            $(canvas).css("right","");                            
+                            $(canvas).css("right","");
                             renderPage(window.pagenumber, canvas);
                         });
                     }
@@ -170,14 +209,17 @@ if (check_permission($path)) {
                 window.prev=function() {
                     if (window.pagenumber>1) {
                         window.pagenumber=window.pagenumber-1;
-                        $(canvas).animate({"left":"2000px"},400,function() {                            
+                        $("#pageselect").val(window.pagenumber);
+                        if (document.getElementById("pagenumberdisplay")!=null)
+                            document.getElementById("pagenumberdisplay").innerHTML=window.pagenumber+"/"+thePdf.numPages;
+                        $(canvas).animate({"left":"2000px"},400,function() {
                             $(canvas).css("display","none");
                             $(canvas).css("left","");
                             renderPage(window.pagenumber, canvas);
-                        });                                                
+                        });
                     }
                 }
-                
+
                 });
              </script>';
         break;

@@ -17,15 +17,8 @@ echo '<div class="row"><form action="' . $base . '/scanfolders.php" method="POST
     <div class="col-md-10"><label>Run a scan to verify all the files in the database still exist on the filesystem</label></div>
     </form></div>';
 echo '</div></div>';
-if ($_REQUEST["scanfiles"]) {
-  $abort = false;
-  $active = true;
-  $starttime = time();
-  $allowedruntime = 0;
-  $shareid = 0;
-  $chunksize = 0;
 
-  function dirscan($dirpath, $startpoint = "") {
+function dirscan($dirpath, $startpoint = "") {
     global $share;
     global $abort;
     global $active;
@@ -50,22 +43,27 @@ if ($_REQUEST["scanfiles"]) {
         }
       }
       if (is_dir($fullpath)) {
+         echo $startpoint."<BR>";
         $fullpath = dirscan($fullpath, $startpoint);
       } else {
         if ($active) {
           try {
             $search = $mysql->select("files", ["ID"], "`Path`='" . $mysql->conn->real_escape_string(substr($fullpath, strpos($fullpath, $share) + strlen($share))) . "'");
             if (count($search) == 0) {
-              $fh = fopen($fullpath, "r");
+              
               if (filesize($fullpath) > 2 * $chunksize && $chunksize!=0) {
-                $buffbegin = fread($fh, $chunksize);
-                fseek($fh, filesize($fullpath) - $chunksize);
-                $buffend = fread($fh, $chunksize);
-                $md5 = md5($buffbegin . $buffend);
+                $fh = fopen($fullpath, "r");
+                try { 
+                    $buffbegin = fread($fh, $chunksize);                
+                    fseek($fh, filesize($fullpath) - $chunksize);
+                    $buffend = fread($fh, $chunksize);
+                    $md5 = md5($buffbegin . $buffend);
+                } catch (Exception $ex) {
+                }
+                fclose($fh);
               } else {
-                $md5 = md5(fread($fh, filesize($fullpath)));
+                $md5 = md5_file($fullpath);
               }
-              fclose($fh);
               if (!$mysql->insert("files", ["Share" => $shareid, "Path" => substr($fullpath, strpos($fullpath, $share) + strlen($share)), "Filename" => $file, "MD5" => $md5, "Size" => filesize($fullpath), "Modtime" => filemtime($fullpath)])) {
                 if (strpos($mysql->error, "Duplicate entry") >= 0) {
                   if (!$mysql->insert("duplicates", ["Share" => $shareid, "Path" => substr($fullpath, strpos($fullpath, $share) + strlen($share)), "Filename" => $file, "MD5" => $md5, "Size" => filesize($fullpath), "Modtime" => filemtime($fullpath)])) {
@@ -84,7 +82,17 @@ if ($_REQUEST["scanfiles"]) {
     }
     closedir($dir_handle);
     return $fullpath;
-  }
+}
+
+if ($_REQUEST["scanfiles"]) {
+  $abort = false;
+  $active = true;
+  $starttime = time();
+  $allowedruntime = 0;
+  $shareid = 0;
+  $chunksize = 0;
+
+
   
 //ignore_user_abort(true);
   $allowedruntime = ini_get('max_execution_time');
