@@ -8,7 +8,7 @@ $BODYOPEN = '<!doctype html>
 <link href="'.$base.'/css/styles.css" rel="stylesheet" />
 <script type="text/javascript" src="'.$base.'/js/jquery.min.js"></script>
 <script type="text/javascript" src="'.$base.'/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="'.$base.'/js/pdf.min.js"></script>
+<script id="pdfscriptinclude" type="text/javascript" src="'.$base.'/js/pdf.min.js"></script>
 <script type="text/javascript" src="'.$base.'/js/scripts.js"></script>
 </head>';
 echo $BODYOPEN;

@@ -57,10 +57,11 @@ $folder=substr($path,0,strrpos($path,"/")+1);
 $folderhash=base64_encode($folder);
 $siblings=get_siblings($folder,$cpath);
 $fullurl=$_SERVER["REQUEST_SCHEME"] . "://" . $_SERVER["HTTP_HOST"].$base."/file/".substr($url,strrpos($url,"show/")+5).substr($path,strrpos($path,"."));
-
+$vlcurl= "VLC://" . $_SERVER["HTTP_HOST"].$base."/file/".substr($url,strrpos($url,"show/")+5).substr($path,strrpos($path,"."));
 if (check_permission($path)) {
   if (file_exists($path) && is_file($path)) {
-    $filename = utf8_encode(substr($path, strrpos($path, "/") + 1));
+    //$filename = utf8_encode(substr($path, strrpos($path, "/") + 1));
+    $filename = substr($path, strrpos($path, "/") + 1);
     if ($fullscreen)
         echo "<div class=\"row\">";
     else
@@ -83,7 +84,8 @@ if (check_permission($path)) {
         echo "<div class=\"col-xs-12 mediacontainer\" style=\"padding:0;\">";
     else
         echo "<div class=\"col-xs-12 mediacontainer\">";
-    switch ($file_types[get_file_type($path)]) {
+    $filetype=$file_types[get_file_type($path)];
+    switch ($filetype) {
       case "video":
         $srturl="";
         if (file_exists(substr($path,0,strrpos($path,".")).".srt")) {
@@ -130,7 +132,7 @@ if (check_permission($path)) {
                 $(document).ready(function() {
                 var pdffile = "'.$fullurl.'";
                 var thePdf = null;
-                var scale = 5;
+                var scale = 1;
                 var query="";
                 if (window.location.toString().lastIndexOf("?")>=0) {
                     query=window.location.toString().substr(window.location.toString().lastIndexOf("?")+1,window.location.toString().length);
@@ -146,15 +148,19 @@ if (check_permission($path)) {
                 }
                 function renderPage(pageNumber, canvas) {
                     thePdf.getPage(pageNumber).then(function(page) {
-                        viewport = page.getViewport(scale);
+                        viewport = page.getViewport({scale:scale});
                         canvas.height = viewport.height;
                         canvas.width = viewport.width;
                         $(canvas).css("display","");
                         page.render({canvasContext: canvas.getContext("2d"), viewport: viewport});
                     });
                 }
-
-                pdfjsLib.getDocument(pdffile).then(function(pdf) {
+                                
+                pdfjsLib.GlobalWorkerOptions.workerSrc=$("#pdfscriptinclude").attr("src").replace(/\.min\.js$/i, \'.worker.min.js\');
+                const loadingTask = pdfjsLib.getDocument(pdffile);
+                loadingTask.promise.then(pdf => {
+                //});
+                //pdfjsLib.getDocument(pdffile).then(function(pdf) {
                     thePdf = pdf;
                     viewer = document.getElementById("pdfdiv");
                     canvas = document.createElement("canvas");
@@ -226,8 +232,14 @@ if (check_permission($path)) {
       default :
         echo "<div class=\"row\"><div class=\"col-xs-12 mediadiv\">Unhandled media type. Download to device by clicking link below.</div></div>";
     }
-    if (!$fullscreen)
+    if (!$fullscreen) {
         echo "<div class=\"row\"><div class=\"col-xs-12\" style=\"padding-bottom:5px;\">Direct Link <a href=\"$fullurl\" title=\"".$path."\" download=\"".$filename."\" class=\"filelink\">$filename</a><img src=\"../pix/copy.png\" class=\"copybutton\" data-text=\"$fullurl\"/></div></div>";
+        if ($filetype=="audio" || $filetype=="video") {
+            
+            echo "<div class=\"row\"><div class=\"col-xs-12 vlclink\" style=\"padding-bottom:5px;\"><a href=\"$vlcurl\" title=\"".$path."\" class=\"filelink\"><img class=\"img-fluid vlcicon\" src=\"../pix/vlc.png\"/> $filename</a></div></div>";    
+        }
+        
+    }
     echo "</div></div>";
   } else {
     header("HTTP/1.1 404 Invalid Request");

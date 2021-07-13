@@ -159,8 +159,12 @@
 }
 .nolink {
   text-decoration:none !important;
+/*
   cursor:default !important;
+*/
   color:black;
+  width: 100%;
+  display: inline-block;
 }
 .filelink {
   text-decoration:none;
@@ -307,3 +311,21 @@ a.prevlink:link, a.prevlink:visited, a.prevlink:hover, a.prevlink:active {
 	width:auto !important;
 }
 */
+
+.vlclink a {
+    margin-top:20px;
+    height:40px;
+    display:inline-block;
+}
+
+.vlclink img {
+    width: auto;
+    height : auto;
+    max-height:100%;
+    max-width:100%;
+    object-fit: contain;
+}
+
+.vlcicon {
+    max-height:40px;
+}
